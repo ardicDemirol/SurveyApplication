@@ -1,21 +1,31 @@
 ﻿using Dapper;
-using Npgsql;
 using SurveyApplication.Dtos;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository;
 
-public class SurveyRepository : ISurveyRepository
+public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ISurveyRepository
 {
-    const string CONNECTION_STRING = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
+    private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+
     public async Task CreateSurvey(SurveyDto survey)
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string checkCompanyExists = $"SELECT company_id FROM company WHERE company_name = @companyName";
-        string insertCompany = $"INSERT INTO company (company_name) VALUES (@companyName) RETURNING company_id";
-        string insertSurvey = $"INSERT INTO surveys (survey_title, start_time, finish_time, completed_count, company_name) VALUES (@name, @startTime, @finishTime, 0, @companyName)";
+        string checkCompanyExists = """
+                                    SELECT company_id 
+                                    FROM company 
+                                    WHERE company_name = @companyName
+                                    """;
+        string insertCompany = """
+                               INSERT INTO company (company_name)
+                               VALUES (@companyName)
+                               RETURNING company_id
+                               """;
+        string insertSurvey = """
+                              INSERT INTO surveys (survey_title, start_time, finish_time, completed_count, company_name)
+                              VALUES (@name, @startTime, @finishTime, 0, @companyName)
+                              """;
 
         int? companyId = await connection.ExecuteScalarAsync<int?>(checkCompanyExists, new { companyName = survey.Company_Name });
 
@@ -34,10 +44,13 @@ public class SurveyRepository : ISurveyRepository
 
     public async Task<SurveyDto> GetSurveyById(int id)
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string commandText = $"SELECT * FROM surveys WHERE Survey_Id = @id";
+        string commandText = """
+                            SELECT (*)
+                            FROM surveys 
+                            WHERE Survey_Id = @id
+                            """;
         var queryArgs = new { id };
 
         var surveys = await connection.QueryFirstOrDefaultAsync<SurveyDto>(commandText, queryArgs);
@@ -47,10 +60,12 @@ public class SurveyRepository : ISurveyRepository
 
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string commandText = $"SELECT Survey_Id, Survey_Title, Completed_Count FROM surveys;";
+        string commandText = """
+                            SELECT Survey_Id, Survey_Title, Completed_Count 
+                            FROM surveys
+                            """;
 
         var surveys = await connection.QueryAsync<T>(commandText);
 

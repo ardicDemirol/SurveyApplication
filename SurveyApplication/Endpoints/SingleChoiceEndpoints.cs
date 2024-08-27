@@ -37,7 +37,7 @@ public static class SingleChoiceEndpoints
             return Results.Created($"/singlechoice/answer", answer);
         });
 
-        builder.MapPost("/singlechoice/GetAnswer", async (ISingleChoiceRepository repository, int surveyID, int questionId) =>
+        builder.MapGet("/singlechoice/GetAnswer", async (ISingleChoiceRepository repository, int surveyID, int questionId) =>
         {
             var result = await repository.GetAnswer<GetAnswerSingleChoiceAnswerModel>(surveyID, questionId);
             return Results.Ok(result);

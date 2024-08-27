@@ -8,20 +8,15 @@ public static class QuestionEndpoints
 {
     public static void MapQuestionEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/questions/{id}", async (IQuestionRepository repository, int id) =>
+
+        builder.MapGet("/questions/GetAllQuestions/Survey{id}", async (IQuestionRepository repository, int id) =>
         {
             var question = await repository.GetAllQuestions<GetQuestionModel>(id);
             return Results.Ok(question);
         });
 
-        //builder.MapGet("/questions", async (IQuestionRepository repository) =>
-        //{
-        //    var questions = await repository.GetAllQuestions<QuestionListDto>();
-        //    return Results.Ok(questions);
-        //});
 
-
-        builder.MapPost("/question", async (IQuestionRepository repository, CreateQuestionModel questionDto) =>
+        builder.MapPost("/question/CreateQuestion", async (IQuestionRepository repository, CreateQuestionModel questionDto) =>
         {
             if (questionDto.Question_Answer_Required != 'Y' && questionDto.Question_Answer_Required != 'N')
             {

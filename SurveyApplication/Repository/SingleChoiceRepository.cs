@@ -1,18 +1,16 @@
 ﻿using Dapper;
-using Npgsql;
 using SurveyApplication.Dtos;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository;
 
-public class SingleChoiceRepository : ISingleChoiceRepository
+public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ISingleChoiceRepository
 {
-    const string CONNECTION_STRING = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
+    private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
 
     public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
         string insertSingleChoice = $"INSERT INTO single_choice_questions (first_choice,second_choice,question_id) VALUES (@firstChoice,@secondChoice,@questionId)";
 
@@ -30,16 +28,41 @@ public class SingleChoiceRepository : ISingleChoiceRepository
 
     public async Task<T> SaveAnswer<T>(SingleChoiceAnswerDto answer)
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string checkQuestion = $"SELECT COUNT(1) FROM question WHERE question_id = @questionId AND survey_id = @surveyId";
-        string getChoicesQuery = $"SELECT first_choice, second_choice FROM single_choice_questions WHERE question_id = @questionId";
-        string checkIsMandatory = $"SELECT question_answer_required FROM question WHERE question_id = @questionId AND survey_id = @surveyId";
-        string checkQuery = $"SELECT COUNT(1) FROM single_choice_answers WHERE question_id = @questionId AND survey_id = @surveyId";
-        string insertAnswerQuery = $"INSERT INTO single_choice_answers (answer,question_id,survey_id) VALUES (@answer,@questionId,@surveyId)";
+        string checkQuestionQuery = """ 
+                                    SELECT COUNT(1)
+                                    FROM question 
+                                    WHERE question_id = @questionId     
+                                        AND survey_id = @surveyId
+                                    """;
 
-        int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestion,
+        string getChoicesQuery = """
+                                 SELECT first_choice, second_choice 
+                                 FROM single_choice_questions 
+                                 WHERE question_id = @questionId
+                                 """;
+
+        string checkIsMandatory = """ 
+                                  SELECT question_answer_required 
+                                  FROM question 
+                                  WHERE question_id = @questionId 
+                                    AND survey_id = @surveyId
+                                  """;
+
+        string checkQuery = """
+                            SELECT COUNT(1)
+                            FROM single_choice_answers 
+                            WHERE question_id = @questionId 
+                                AND survey_id = @surveyId
+                            """;
+
+        string insertAnswerCommand = """
+                            INSERT INTO single_choice_answers (answer,question_id,survey_id) 
+                            VALUES (@answer,@questionId,@surveyId)
+                            """;
+
+        int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestionQuery,
             new
             {
                 questionId = answer.Question_Id,
@@ -82,17 +105,21 @@ public class SingleChoiceRepository : ISingleChoiceRepository
             surveyId = answer.Survey_Id,
         };
 
-        await connection.ExecuteAsync(insertAnswerQuery, parameters);
+        await connection.ExecuteAsync(insertAnswerCommand, parameters);
         throw new Exception("Answer saved successfully");
     }
 
 
     public async Task<T> GetAnswer<T>(int surveyId, int questionId)
     {
-        using var connection = new NpgsqlConnection(CONNECTION_STRING);
-        await connection.OpenAsync();
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string commandText = $"SELECT answer FROM single_choice_answers WHERE question_id = @questionId AND survey_id = @surveyId";
+        string commandText = """
+            SELECT answer
+            FROM single_choice_answers
+            WHERE question_id = @questionId 
+                AND survey_id = @surveyId
+            """;
 
         var answer = await connection.QueryFirstOrDefaultAsync<T>(commandText, new { questionId, surveyId });
 

@@ -1,3 +1,4 @@
+using SurveyApplication.Data;
 using SurveyApplication.Endpoints;
 using SurveyApplication.Interfaces;
 using SurveyApplication.Repository;
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
+builder.Services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
 
 
 var app = builder.Build();
