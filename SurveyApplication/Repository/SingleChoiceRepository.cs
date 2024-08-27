@@ -28,15 +28,16 @@ public class SingleChoiceRepository : ISingleChoiceRepository
 
 
 
-    public async Task<bool> SaveAnswer(SingleChoiceAnswerDto answer)
+    public async Task<T> SaveAnswer<T>(SingleChoiceAnswerDto answer)
     {
         using var connection = new NpgsqlConnection(CONNECTION_STRING);
         await connection.OpenAsync();
 
         string checkQuestion = $"SELECT COUNT(1) FROM question WHERE question_id = @questionId AND survey_id = @surveyId";
+        string getChoicesQuery = $"SELECT first_choice, second_choice FROM single_choice_questions WHERE question_id = @questionId";
         string checkIsMandatory = $"SELECT question_answer_required FROM question WHERE question_id = @questionId AND survey_id = @surveyId";
         string checkQuery = $"SELECT COUNT(1) FROM single_choice_answers WHERE question_id = @questionId AND survey_id = @surveyId";
-        string commandText = $"INSERT INTO single_choice_answers (answer,question_id,survey_id) VALUES (@answer,@questionId,@surveyId)";
+        string insertAnswerQuery = $"INSERT INTO single_choice_answers (answer,question_id,survey_id) VALUES (@answer,@questionId,@surveyId)";
 
         int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestion,
             new
@@ -44,20 +45,26 @@ public class SingleChoiceRepository : ISingleChoiceRepository
                 questionId = answer.Question_Id,
                 surveyId = answer.Survey_Id
             });
-        if (existingQuestionCount < 1) return false;
 
-        char charValue = await connection.ExecuteScalarAsync<char>(checkIsMandatory,
-            new
-            {
-                questionId = answer.Question_Id,
-                surveyId = answer.Survey_Id
-            });
+        if (existingQuestionCount < 1) throw new Exception("No such question was found");
 
+        //char charValue = await connection.ExecuteScalarAsync<char>(checkIsMandatory,
+        //    new
+        //    {
+        //        questionId = answer.Question_Id,
+        //        surveyId = answer.Survey_Id
+        //    });
         //bool isMandatory;
         //if (charValue.ToString() == "N") isMandatory = false;
         //else isMandatory = true;
 
+        var validChoices = connection.Query(getChoicesQuery, new { questionId = answer.Question_Id })
+                                 .SelectMany(row => new List<string> { row.first_choice, row.second_choice })
+                                 .ToList();
 
+        string userAnswer = answer.Answer;
+
+        if (!validChoices.Contains(userAnswer)) throw new Exception("Answer not found in the choices");
 
         int existingCount = await connection.ExecuteScalarAsync<int>(checkQuery,
             new
@@ -65,7 +72,8 @@ public class SingleChoiceRepository : ISingleChoiceRepository
                 questionId = answer.Question_Id,
                 surveyId = answer.Survey_Id
             });
-        if (existingCount > 0) return false;
+
+        if (existingCount > 0) throw new Exception("You replied this question before");
 
         var parameters = new
         {
@@ -74,9 +82,8 @@ public class SingleChoiceRepository : ISingleChoiceRepository
             surveyId = answer.Survey_Id,
         };
 
-        await connection.ExecuteAsync(commandText, parameters);
-        return true;
-
+        await connection.ExecuteAsync(insertAnswerQuery, parameters);
+        throw new Exception("Answer saved successfully");
     }
 
 

@@ -30,9 +30,9 @@ public static class SingleChoiceEndpoints
                 Survey_Id = answer.Survey_Id
             };
 
-            var result = await repository.SaveAnswer(newAnswer);
+            var result = await repository.SaveAnswer<SaveSingleChoiceAnswerModel>(newAnswer);
 
-            if (!result) return Results.BadRequest("The question or survey does not exist.");
+            //if (!result) return Results.BadRequest("The question or survey does not exist.");
 
             return Results.Created($"/singlechoice/answer", answer);
         });
@@ -41,8 +41,6 @@ public static class SingleChoiceEndpoints
         {
             var result = await repository.GetAnswer<GetAnswerSingleChoiceAnswerModel>(surveyID, questionId);
             return Results.Ok(result);
-            //if (!result) return Results.BadRequest("The question or survey does not exist.");
-
         });
 
 
