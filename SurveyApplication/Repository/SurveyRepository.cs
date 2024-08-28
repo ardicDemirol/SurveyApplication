@@ -8,7 +8,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
 
-    public async Task CreateSurvey(SurveyDto survey)
+    public async Task CreateSurvey<T>(SurveyDto survey)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -39,21 +39,23 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
             companyName = survey.Company_Name
         };
 
-        await connection.ExecuteAsync(insertSurvey, parameters);
+        var newSurvey = await connection.ExecuteAsync(insertSurvey, parameters);
+
+
     }
 
-    public async Task<SurveyDto> GetSurveyById(int id)
+    public async Task<T> GetSurveyById<T>(int id)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
         string commandText = """
-                            SELECT (*)
+                            SELECT *
                             FROM surveys 
                             WHERE Survey_Id = @id
                             """;
         var queryArgs = new { id };
 
-        var surveys = await connection.QueryFirstOrDefaultAsync<SurveyDto>(commandText, queryArgs);
+        var surveys = await connection.QueryFirstOrDefaultAsync<T>(commandText, queryArgs);
 
         return surveys ?? throw new Exception("Survey not found");
     }
@@ -68,10 +70,6 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
                             """;
 
         var surveys = await connection.QueryAsync<T>(commandText);
-
-
         return surveys ?? throw new Exception("Survey not found");
     }
-
-
 }

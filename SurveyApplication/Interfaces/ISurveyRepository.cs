@@ -4,8 +4,8 @@ namespace SurveyApplication.Interfaces;
 
 public interface ISurveyRepository
 {
-    Task CreateSurvey(SurveyDto survey);
-    Task<SurveyDto> GetSurveyById(int id);
+    Task CreateSurvey<T>(SurveyDto survey);
+    Task<T> GetSurveyById<T>(int id);
     Task<IEnumerable<T>> GetAllSurveys<T>();
 
 }

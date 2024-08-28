@@ -29,7 +29,6 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         };
 
         await connection.ExecuteAsync(insertQuestion, parameters);
-
     }
 
     public async Task<IEnumerable<T>> GetAllQuestions<T>(int surveyId)
@@ -56,5 +55,4 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         return questions;
 
     }
-
 }

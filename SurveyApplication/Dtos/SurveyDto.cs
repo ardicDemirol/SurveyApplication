@@ -8,11 +8,11 @@ public class SurveyDto
     public int Survey_Id { get; set; }
     [Required]
     public string Survey_Title { get; set; } = string.Empty;
-    //[Required]
+    [Required]
     public DateTime Start_Time { get; set; }
-    //[Required]
+    [Required]
     public DateTime Finish_Time { get; set; }
-    //[Required]
+    [Required]
     public int Completed_Count { get; set; }
     [Required]
     public string Company_Name { get; set; } = string.Empty;

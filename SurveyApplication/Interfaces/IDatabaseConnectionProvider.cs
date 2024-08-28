@@ -1,9 +1,7 @@
 ﻿using Npgsql;
 
-namespace SurveyApplication.Interfaces
+namespace SurveyApplication.Interfaces;
+public interface IDatabaseConnectionProvider
 {
-    public interface IDatabaseConnectionProvider
-    {
-        Task<NpgsqlConnection> GetOpenConnectionAsync();
-    }
+    Task<NpgsqlConnection> GetOpenConnectionAsync();
 }

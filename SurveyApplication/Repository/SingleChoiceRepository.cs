@@ -8,7 +8,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
 
-    public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
+    public async Task AddChoices(SingleChoiceQuestionDto singleChoice)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -26,7 +26,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
 
 
-    public async Task<T> SaveAnswer<T>(SingleChoiceAnswerDto answer)
+    public async Task SaveAnswer(SingleChoiceAnswerDto answer)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -106,11 +106,10 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         };
 
         await connection.ExecuteAsync(insertAnswerCommand, parameters);
-        throw new Exception("Answer saved successfully");
     }
 
 
-    public async Task<T> GetAnswer<T>(int surveyId, int questionId)
+    public async Task<T> GetAnswer<T>(int questionId, int surveyId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -118,13 +117,12 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
             SELECT answer
             FROM single_choice_answers
             WHERE question_id = @questionId 
-                AND survey_id = @surveyId
+            AND survey_id = @surveyId
             """;
 
         var answer = await connection.QueryFirstOrDefaultAsync<T>(commandText, new { questionId, surveyId });
 
         return answer ?? throw new Exception("Answer not found");
     }
-
 
 }

@@ -7,7 +7,6 @@ public class QuestionDto
     public int Question_Id { get; set; }
     [Required]
     public string Question_Text { get; set; } = string.Empty;
-    [Required]
     public int Question_Order { get; set; }
     [Required]
     public char Question_Answer_Required { get; set; }
