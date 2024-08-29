@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SurveyApplication.Dtos;
+using SurveyApplication.Dtos.SurveyDtos;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.Surveys.Command.CreateSurvey;

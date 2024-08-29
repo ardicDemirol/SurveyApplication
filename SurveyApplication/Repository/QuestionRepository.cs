@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using SurveyApplication.Dtos;
+using SurveyApplication.Dtos.QuestionDtos;
 using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
 

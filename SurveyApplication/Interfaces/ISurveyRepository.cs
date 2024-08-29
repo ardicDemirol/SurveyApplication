@@ -1,4 +1,4 @@
-﻿using SurveyApplication.Dtos;
+﻿using SurveyApplication.Dtos.SurveyDtos;
 
 namespace SurveyApplication.Interfaces;
 

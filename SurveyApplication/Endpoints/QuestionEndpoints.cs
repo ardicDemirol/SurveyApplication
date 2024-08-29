@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SurveyApplication.Features.Surveys.Command.CreateQuestion;
-using SurveyApplication.Features.Surveys.Queries.GetAllSurveyQuestions;
+using SurveyApplication.Features.Questions.Command.CreateQuestion;
+using SurveyApplication.Features.Questions.Queries.GetAllSurveyQuestions;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Endpoints;

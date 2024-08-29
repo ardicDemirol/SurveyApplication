@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Surveys\Handlers\" />
-    <Folder Include="Mappers\" />
+    <Folder Include="Features\ListBasedQuestion\Queries\" />
+    <Folder Include="Features\ListBasedQuestion\Command\" />
   </ItemGroup>
 
 </Project>

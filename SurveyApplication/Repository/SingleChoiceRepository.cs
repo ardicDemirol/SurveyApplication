@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using SurveyApplication.Dtos;
+using SurveyApplication.Dtos.SingleChoiceDtos;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository;
@@ -8,11 +8,14 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
 
-    public async Task AddChoices(SingleChoiceQuestionDto singleChoice)
+    public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string insertSingleChoice = $"INSERT INTO single_choice_questions (first_choice,second_choice,question_id) VALUES (@firstChoice,@secondChoice,@questionId)";
+        string insertCommand = """
+                              INSERT INTO single_choice_questions (first_choice,second_choice,question_id) 
+                              VALUES (@firstChoice,@secondChoice,@questionId)
+                              """;
 
         var parameters = new
         {
@@ -21,7 +24,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
             questionId = singleChoice.Question_Id
         };
 
-        await connection.ExecuteAsync(insertSingleChoice, parameters);
+        await connection.ExecuteAsync(insertCommand, parameters);
     }
 
 

@@ -6,25 +6,25 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Endpoints;
 
-public static class SingleChoiceEndpoints
+public static class ListBasedEndpoints
 {
-    public static void MapSingleChoiceEndpoints(this IEndpointRouteBuilder builder)
+    public static void MapListBasedEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/SingleChoice/AddChoicesToQuestion", async (ISingleChoiceRepository repository, IMediator mediator, AddSCQChoicesCommandRequest choice) =>
+        builder.MapPost("/ListBased/ListQuestion", async (ISingleChoiceRepository repository, IMediator mediator, AddSCQChoicesCommandRequest choice) =>
         {
             await mediator.Send(choice);
 
             return Results.Created($"/singlechoice/", choice);
         });
 
-        builder.MapPost("/SingleChoice/SaveAnswer", async (ISingleChoiceRepository repository, IMediator mediator, SaveSCACommandRequest answer) =>
+        builder.MapPost("/ListBased/SaveAnswer", async (ISingleChoiceRepository repository, IMediator mediator, SaveSCACommandRequest answer) =>
         {
             await mediator.Send(answer);
 
             return Results.Created($"/singlechoice/answer", answer);
         });
 
-        builder.MapGet("/SingleChoice/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId, int surveyID) =>
+        builder.MapGet("/ListBased/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId, int surveyID) =>
         {
             var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId, surveyID));
 
