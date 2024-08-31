@@ -46,7 +46,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         if (existingSurveyCount < 1) throw new Exception("No such survey was found");
 
         string getAllQuestionQuery = """
-                                     SELECT question_text 
+                                     SELECT question_id, question_text
                                      FROM question 
                                      WHERE survey_id = @surveyId
                                      """;

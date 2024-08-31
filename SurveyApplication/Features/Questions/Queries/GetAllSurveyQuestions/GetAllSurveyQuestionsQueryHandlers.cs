@@ -14,6 +14,7 @@ public class GetAllSurveyQuestionsQueryHandlers(IQuestionRepository questionRepo
 
         foreach (var question in questions)
             response.Add(new GetAllSurveyQuestionsQueryResponse(
+                question.Question_Id,
                 question.Question_Text
             ));
 
