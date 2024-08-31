@@ -2,6 +2,8 @@
 
 namespace SurveyApplication.Features.Surveys.Queries.GetAllSurveys;
 
-public class GetAllSurveysQueryRequest : IRequest<IList<GetAllSurveysQueryResponse>>
-{
-}
+public sealed record GetAllSurveysQueryRequest : IRequest<IList<GetAllSurveysQueryResponse>>;
+
+//public class GetAllSurveysQueryRequest : IRequest<IList<GetAllSurveysQueryResponse>>
+//{
+//}

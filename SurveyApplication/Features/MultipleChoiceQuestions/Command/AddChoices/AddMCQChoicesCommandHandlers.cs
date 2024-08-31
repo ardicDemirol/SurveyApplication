@@ -12,7 +12,7 @@ public class AddMCQChoicesCommandHandlers(IMultipleChoiceRepository multipleChoi
         var newMultipleChoiceQuestionChoices = new MultipleOtherChoicesDto
         {
             Choice = request.Choice,
-            Multiple_Choice_Question_Id = request.Multiple_Choice_Question_Id
+            Multiple_Choice_Question_Id = request.MultipleChoiceQuestionId
         };
 
         await _multipleChoiceRepository.AddChoice(newMultipleChoiceQuestionChoices);

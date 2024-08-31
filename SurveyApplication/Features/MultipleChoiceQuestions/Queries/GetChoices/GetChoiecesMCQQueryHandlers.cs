@@ -12,11 +12,10 @@ public class GetChoiecesMCQQueryHandlers(IMultipleChoiceRepository multipleChoic
 
         List<GetChoicesMCQQueryResponse> response = [];
 
-
         foreach (var choice in choices)
         {
             response.Add(new GetChoicesMCQQueryResponse(
-                choice.Choices
+                choice.Choice
             ));
         }
 

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 
-namespace SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
-
-public sealed record GetAnswerSCQQueryResponse(
-    [Required] string Answer
-);
+/// <summary>
+/// The parameters must be equal to database columns
+/// </summary>
+/// <param name="Answer"></param>
+public sealed record GetAnswerSCQQueryResponse(string Answer);

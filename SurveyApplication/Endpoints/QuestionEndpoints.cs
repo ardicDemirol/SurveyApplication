@@ -10,7 +10,7 @@ public static class QuestionEndpoints
     public static void MapQuestionEndpoints(this IEndpointRouteBuilder builder)
     {
 
-        builder.MapGet("/questions/GetAllSurveyQuestions/Survey{id}", async (IQuestionRepository repository, IMediator mediator, int id) =>
+        builder.MapGet("/Questions/GetAllSurveyQuestions/Survey{id}", async (IQuestionRepository repository, IMediator mediator, int id) =>
         {
             var response = await mediator.Send(new GetAllSurveyQuestionsQueryRequest(id));
             return Results.Ok(response);

@@ -2,8 +2,11 @@
 
 namespace SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 
-public class GetAnswerSCQQueryRequest(int questionID, int surveyID) : IRequest<GetAnswerSCQQueryResponse>
-{
-    public int QuestionID { get; } = questionID;
-    public int SurveyID { get; } = surveyID;
-}
+public sealed record GetAnswerSCQQueryRequest(int QuestionID, int SurveyId) : IRequest<GetAnswerSCQQueryResponse>;
+
+
+//public class GetAnswerSCQQueryRequest(int QuestionID, int Survey_Id) : IRequest<GetAnswerSCQQueryResponse>
+//{
+//    public int QuestionID { get; } = QuestionID;
+//    public int Survey_Id { get; } = Survey_Id;
+//}

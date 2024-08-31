@@ -130,7 +130,7 @@ namespace SurveyApplication.Repository
             using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
             string getChoicesViewQuery = """
-                                         SELECT STRING_AGG(oc.choice, ',') AS Choice_Text
+                                         SELECT STRING_AGG(oc.choice, ',') AS Choice
                                          FROM other_choices oc
                                          JOIN multiple_choice_questions mcq
                                             ON oc.multiple_choice_questions_id = mcq.choice_id

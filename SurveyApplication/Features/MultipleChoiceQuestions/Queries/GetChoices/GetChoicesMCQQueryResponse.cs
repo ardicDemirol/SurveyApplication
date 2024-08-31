@@ -1,11 +1,4 @@
 ﻿namespace SurveyApplication.Features.MultipleChoiceQuestions.Queries.GetChoices;
 
-public sealed record GetChoicesMCQQueryResponse
-{
-    public string Choices { get; set; }
+public sealed record GetChoicesMCQQueryResponse(string Choice);
 
-    public GetChoicesMCQQueryResponse(string choice_Text)
-    {
-        Choices = choice_Text;
-    }
-}
