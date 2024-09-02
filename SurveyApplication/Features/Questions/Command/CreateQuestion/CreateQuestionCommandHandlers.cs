@@ -4,11 +4,16 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.Questions.Command.CreateQuestion;
 
-public class CreateQuestionCommandHandlers(IQuestionRepository questionRepository) : IRequestHandler<CreateQuestionCommandRequest>
+public class CreateQuestionCommandHandlers(IQuestionRepository questionRepository) : IRequestHandler<CreateQuestionCommandRequest, IResult>
 {
     private readonly IQuestionRepository _questionRepository = questionRepository;
-    public async Task Handle(CreateQuestionCommandRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(CreateQuestionCommandRequest request, CancellationToken cancellationToken)
     {
+        if (request.Question_Answer_Required != 'Y' && request.Question_Answer_Required != 'N')
+        {
+            return Results.BadRequest("The Question_Answer_Required field must be 'Y' or 'N'.");
+        }
+
         var newQuestion = new QuestionDto
         {
             Question_Text = request.Question_Text,
@@ -18,5 +23,7 @@ public class CreateQuestionCommandHandlers(IQuestionRepository questionRepositor
         };
 
         await _questionRepository.CreateQuestion(newQuestion);
+
+        return Results.Ok("Question created successfuly");
     }
 }

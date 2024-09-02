@@ -34,14 +34,13 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         var parameters = new
         {
             name = survey.Survey_Title,
-            startTime = survey.Start_Time,
+            startTime = DateTime.Now,
             finishTime = survey.Finish_Time,
             companyName = survey.Company_Name
         };
 
+
         var newSurvey = await connection.ExecuteAsync(insertSurvey, parameters);
-
-
     }
 
     public async Task<T> GetSurveyById<T>(int surveyId)

@@ -2,7 +2,6 @@
 using SurveyApplication.Dtos.QuestionDtos;
 using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Views;
 
 namespace SurveyApplication.Repository;
 public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionProvider) : IQuestionRepository
@@ -32,7 +31,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         await connection.ExecuteAsync(insertQuestion, parameters);
     }
 
-    public async Task<IEnumerable<SingleChoiceQuestionChoicesView>> GetAllQuestions<T>(int surveyId)
+    public async Task<IEnumerable<SingleChoiceQuestionChoicesViewDto>> GetAllQuestions<T>(int surveyId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -47,19 +46,12 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         if (existingSurveyCount < 1) throw new Exception("No such survey was found");
 
         string getSingleChoiceQuestionQuery = """
-                                                 SELECT question_id, question_text, first_choice, second_choice
-                                                 FROM single_choice_question_choices_view
+                                                 SELECT question_id, question_text,choice
+                                                 FROM question_choices_view
                                                  WHERE survey_id = @surveyId
                                                  """;
 
-        //string getSingleChoiceQuestionQuery = """
-        //                                         SELECT question_id, question_text, first_choice, second_choice
-        //                                         FROM single_choice_question_choices_view
-        //                                         WHERE survey_id = @surveyId
-        //                                         """;
-
-
-        var singleChoiceQuestion = await connection.QueryAsync<SingleChoiceQuestionChoicesView>(getSingleChoiceQuestionQuery, new { surveyId });
+        var singleChoiceQuestion = await connection.QueryAsync<SingleChoiceQuestionChoicesViewDto>(getSingleChoiceQuestionQuery, new { surveyId });
 
         return singleChoiceQuestion;
 

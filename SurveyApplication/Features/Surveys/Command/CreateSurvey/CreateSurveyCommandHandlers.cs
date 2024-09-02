@@ -14,7 +14,6 @@ public class CreateSurveyCommandHandlers(ISurveyRepository repository) : IReques
         var newSurvey = new SurveyDto
         {
             Survey_Title = request.Survey_Title,
-            Start_Time = request.Start_Time,
             Finish_Time = request.Finish_Time,
             Company_Name = request.Company_Name
         };

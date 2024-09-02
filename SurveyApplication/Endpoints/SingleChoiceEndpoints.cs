@@ -28,7 +28,7 @@ public static class SingleChoiceEndpoints
         {
             var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId, surveyID));
 
-            return Results.Ok(response);
+            return response;
         });
     }
 }

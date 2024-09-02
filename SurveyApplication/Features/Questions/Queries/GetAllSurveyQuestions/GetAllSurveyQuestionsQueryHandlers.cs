@@ -16,8 +16,7 @@ public class GetAllSurveyQuestionsQueryHandlers(IQuestionRepository questionRepo
             response.Add(new GetAllSurveyQuestionsQueryResponse(
                 question.Question_Id,
                 question.Question_Text,
-                question.First_Choice,
-                question.Second_Choice
+                question.Choice
             ));
 
         return response;
