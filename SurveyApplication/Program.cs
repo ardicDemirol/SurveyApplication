@@ -16,6 +16,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
 builder.Services.AddScoped<IMultipleChoiceRepository, MultipleChoiceRepository>();
 builder.Services.AddScoped<ITextBasedRepository, TextBasedRepository>();
+builder.Services.AddScoped<IQuestionsAndAnswers, QuestionsAndAnswersRepository>();
 builder.Services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
 builder.Services.AddApplicationServices();
 
@@ -41,6 +42,7 @@ app.MapQuestionEndpoints();
 app.MapSingleChoiceEndpoints();
 app.MapMultipleChoiceEndpoints();
 app.MapTextBasedEndpoints();
+app.MapQuestionsAndAnswersEndpoints();
 
 app.Run();
 

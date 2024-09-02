@@ -4,7 +4,7 @@ namespace SurveyApplication.Interfaces;
 public interface IQuestionRepository
 {
     Task CreateQuestion(QuestionDto question);
-    Task<IEnumerable<SingleChoiceQuestionChoicesViewDto>> GetAllQuestions<T>(int surveyId);
+    Task<IEnumerable<QuestionChoicesViewDto>> GetAllQuestions<T>(int surveyId);
 
 }
 

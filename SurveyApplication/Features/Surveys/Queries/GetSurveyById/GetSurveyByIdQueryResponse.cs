@@ -1,5 +1,5 @@
 ﻿namespace SurveyApplication.Features.Surveys.Queries.GetSurveyById;
 
-public sealed record GetSurveyByIdQueryResponse(int SurveyId, string SurveyTitle, int CompletedCount);
+public sealed record GetSurveyByIdQueryResponse(string SurveyTitle, DateTime StartTime, DateTime FinishTime, int CompletedCount);
 
 

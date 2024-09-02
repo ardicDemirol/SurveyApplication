@@ -17,8 +17,7 @@ public class GetAllSurveysQueryHandlers(ISurveyRepository repository) : IRequest
         {
             response.Add(new GetAllSurveysQueryResponse(
                 survey.Survey_Id,
-                survey.Survey_Title,
-                survey.Completed_Count
+                survey.Survey_Title
                 ));
         }
 

@@ -1,7 +1,6 @@
 ﻿namespace SurveyApplication.Features.Surveys.Queries.GetAllSurveys;
 public sealed record GetAllSurveysQueryResponse(
     int Survey_Id,
-    string Survey_Title,
-    int Completed_Count
+    string Survey_Title
 );
 

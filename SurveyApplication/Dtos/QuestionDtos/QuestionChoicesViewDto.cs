@@ -1,6 +1,6 @@
 ﻿namespace SurveyApplication.Dtos.QuestionDtos;
 
-public class SingleChoiceQuestionChoicesViewDto
+public class QuestionChoicesViewDto
 {
     public int Question_Id { get; set; }
     public string Question_Text { get; set; } = string.Empty;

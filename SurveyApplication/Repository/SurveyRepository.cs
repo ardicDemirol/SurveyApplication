@@ -47,16 +47,17 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string commandText = """
-                             SELECT survey_id AS SurveyId, survey_title AS SurveyTitle, completed_count AS CompletedCount
+        string queryText = """
+                             SELECT survey_title AS SurveyTitle, start_time AS StartTime,finish_time AS FinishTime, completed_count AS CompletedCount
                              FROM surveys
                              WHERE survey_id = @surveyId
                              """;
 
 
-
         var parameters = new { surveyId };
-        var result = await connection.QueryFirstOrDefaultAsync<T>(commandText, parameters);
+        var result = await connection.QueryFirstOrDefaultAsync<T>(queryText, parameters);
+
+
         return result ?? throw new Exception("Survey not found");
     }
 
@@ -65,7 +66,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
         string commandText = """
-                            SELECT Survey_Id, Survey_Title, Completed_Count 
+                            SELECT survey_id, survey_title
                             FROM surveys
                             """;
 
