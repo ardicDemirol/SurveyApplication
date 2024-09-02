@@ -24,9 +24,9 @@ public static class SingleChoiceEndpoints
             return Results.Created($"/singlechoice/answer", answer);
         });
 
-        builder.MapGet("/SingleChoice/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId, int surveyID) =>
+        builder.MapGet("/SingleChoice/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId) =>
         {
-            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId, surveyID));
+            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
 
             return response;
         });

@@ -112,7 +112,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
     }
 
 
-    public async Task<T> GetAnswer<T>(int questionId, int surveyId)
+    public async Task<T> GetAnswer<T>(int questionId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -120,10 +120,9 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
             SELECT answer
             FROM single_choice_answers
             WHERE question_id = @questionId 
-            AND survey_id = @surveyId
             """;
 
-        var answer = await connection.QueryFirstOrDefaultAsync<T>(commandText, new { questionId, surveyId });
+        var answer = await connection.QueryFirstOrDefaultAsync<T>(commandText, new { questionId });
 
         return answer ?? throw new Exception("Answer not found");
     }

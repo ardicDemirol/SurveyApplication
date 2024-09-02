@@ -19,8 +19,6 @@ public static class MultipleChoiceEndpoints
         builder.MapPost("/MultipleChoice/AddChoicesToQuestion", async (IMultipleChoiceRepository repository, IMediator mediator, AddMCQChoicesCommandRequest choice) =>
         {
             await mediator.Send(choice);
-
-            return Results.Created($"/Multiplechoice/", choice);
         });
 
         builder.MapPost("/MultipleChoice/SaveAnswer", async (IMultipleChoiceRepository repository, IMediator mediator, SaveMCACommandRequest answer) =>
@@ -28,13 +26,12 @@ public static class MultipleChoiceEndpoints
             await mediator.Send(answer);
         });
 
-        ///
+
         builder.MapGet("/MultipleChoice/GetChoices", async (IMultipleChoiceRepository repository, IMediator mediator, int questionId) =>
         {
             var response = await mediator.Send(new GetChoicesMCQQueryRequest(questionId));
 
             return Results.Ok(response);
         });
-        ///
     }
 }

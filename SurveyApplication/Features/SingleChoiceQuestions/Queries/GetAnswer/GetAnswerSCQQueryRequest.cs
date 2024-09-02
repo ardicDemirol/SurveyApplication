@@ -2,6 +2,6 @@
 
 namespace SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 
-public sealed record GetAnswerSCQQueryRequest(int QuestionID, int SurveyId) : IRequest<GetAnswerSCQQueryResponse>;
+public sealed record GetAnswerSCQQueryRequest(int QuestionID) : IRequest<GetAnswerSCQQueryResponse>;
 
 

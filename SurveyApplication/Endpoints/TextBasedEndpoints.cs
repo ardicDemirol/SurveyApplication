@@ -26,7 +26,7 @@ public static class TextBasedEndpoints
 
         builder.MapGet("/TextBased/GetAnswer", async (ITextBasedRepository repository, IMediator mediator, int questionId, int surveyID) =>
         {
-            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId, surveyID));
+            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
 
             return Results.Ok(response);
         });

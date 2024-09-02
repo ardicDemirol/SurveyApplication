@@ -8,7 +8,7 @@ public class GetAnswerSCQQueryHandlers(ISingleChoiceRepository singleChoiceRepos
     private readonly ISingleChoiceRepository _singleChoiceRepository = singleChoiceRepository;
     public async Task<GetAnswerSCQQueryResponse> Handle(GetAnswerSCQQueryRequest request, CancellationToken cancellationToken)
     {
-        var answer = await _singleChoiceRepository.GetAnswer<GetAnswerSCQQueryResponse>(request.QuestionID, request.SurveyId);
+        var answer = await _singleChoiceRepository.GetAnswer<GetAnswerSCQQueryResponse>(request.QuestionID);
 
         return answer;
     }
