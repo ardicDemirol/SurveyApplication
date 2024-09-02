@@ -2,7 +2,6 @@
 using SurveyApplication.Features.MultipleChoiceQuestions.Command.AddChoices;
 using SurveyApplication.Features.MultipleChoiceQuestions.Command.SaveAnswers;
 using SurveyApplication.Features.MultipleChoiceQuestions.Command.SetMaxAnswerAmount;
-using SurveyApplication.Features.MultipleChoiceQuestions.Queries.GetChoices;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Endpoints;
@@ -26,12 +25,10 @@ public static class MultipleChoiceEndpoints
             await mediator.Send(answer);
         });
 
-
-        builder.MapGet("/MultipleChoice/GetChoices", async (IMultipleChoiceRepository repository, IMediator mediator, int questionId) =>
-        {
-            var response = await mediator.Send(new GetChoicesMCQQueryRequest(questionId));
-
-            return Results.Ok(response);
-        });
+        //builder.MapGet("/MultipleChoice/GetChoices", async (IMultipleChoiceRepository repository, IMediator mediator, int questionId) =>
+        //{
+        //    var response = await mediator.Send(new GetChoicesMCQQueryRequest(questionId));
+        //    return response;
+        //});
     }
 }

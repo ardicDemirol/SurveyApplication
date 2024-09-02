@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 using SurveyApplication.Features.TextBasedQuestion.Command.SaveAnswer;
 using SurveyApplication.Features.TextBasedQuestion.Command.SetRelation;
 using SurveyApplication.Interfaces;
@@ -24,11 +23,10 @@ public static class TextBasedEndpoints
             return Results.Created($"/TextBased/answer", answer);
         });
 
-        builder.MapGet("/TextBased/GetAnswer", async (ITextBasedRepository repository, IMediator mediator, int questionId, int surveyID) =>
-        {
-            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
-
-            return Results.Ok(response);
-        });
+        //builder.MapGet("/TextBased/GetAnswer", async (ITextBasedRepository repository, IMediator mediator, int questionId, int surveyID) =>
+        //{
+        //    var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
+        //    return response;
+        //});
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 using SurveyApplication.Features.SingleChoiceQuestions.Command.SavesAnswer;
-using SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Endpoints;
@@ -24,11 +23,11 @@ public static class SingleChoiceEndpoints
             return Results.Created($"/singlechoice/answer", answer);
         });
 
-        builder.MapGet("/SingleChoice/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId) =>
-        {
-            var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
+        //builder.MapGet("/SingleChoice/GetAnswer", async (ISingleChoiceRepository repository, IMediator mediator, int questionId) =>
+        //{
+        //    var response = await mediator.Send(new GetAnswerSCQQueryRequest(questionId));
 
-            return response;
-        });
+        //    return response;
+        //});
     }
 }

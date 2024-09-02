@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\TextBasedQuestion\Queries\" />
     <Folder Include="Views\" />
   </ItemGroup>
 
