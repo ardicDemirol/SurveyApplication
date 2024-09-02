@@ -8,14 +8,16 @@ public class GetAllSurveyQuestionsQueryHandlers(IQuestionRepository questionRepo
     private readonly IQuestionRepository _questionRepository = questionRepository;
     public async Task<IList<GetAllSurveyQuestionsQueryResponse>> Handle(GetAllSurveyQuestionsQueryRequest request, CancellationToken cancellationToken)
     {
-        var questions = await _questionRepository.GetAllQuestions<GetAllSurveyQuestionsQueryResponse>(request.SurveyId);
+        var questions = await _questionRepository.GetAllQuestions<GetAllSurveyQuestionsQueryResponse>(request.Survey_Id);
 
         List<GetAllSurveyQuestionsQueryResponse> response = [];
 
         foreach (var question in questions)
             response.Add(new GetAllSurveyQuestionsQueryResponse(
                 question.Question_Id,
-                question.Question_Text
+                question.Question_Text,
+                question.First_Choice,
+                question.Second_Choice
             ));
 
         return response;
