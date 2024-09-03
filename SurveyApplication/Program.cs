@@ -16,7 +16,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
 builder.Services.AddScoped<IMultipleChoiceRepository, MultipleChoiceRepository>();
 builder.Services.AddScoped<ITextBasedRepository, TextBasedRepository>();
-builder.Services.AddScoped<IQuestionsAndAnswers, QuestionsAndAnswersRepository>();
+builder.Services.AddScoped<IQuestionsAndAnswersRepository, QuestionsAndAnswersRepository>();
 builder.Services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
 builder.Services.AddApplicationServices();
 
