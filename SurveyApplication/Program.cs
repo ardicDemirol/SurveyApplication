@@ -1,8 +1,5 @@
-using SurveyApplication.Data;
 using SurveyApplication.Endpoints;
 using SurveyApplication.Helpers;
-using SurveyApplication.Interfaces;
-using SurveyApplication.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +8,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
-builder.Services.AddScoped<IMultipleChoiceRepository, MultipleChoiceRepository>();
-builder.Services.AddScoped<ITextBasedRepository, TextBasedRepository>();
-builder.Services.AddScoped<IQuestionsAndAnswersRepository, QuestionsAndAnswersRepository>();
-builder.Services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
 builder.Services.AddApplicationServices();
 
 

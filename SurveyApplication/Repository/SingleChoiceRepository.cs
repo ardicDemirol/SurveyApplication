@@ -27,8 +27,6 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         await connection.ExecuteAsync(insertCommand, parameters);
     }
 
-
-
     public async Task SaveAnswer(SingleChoiceAnswerDto answer)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();

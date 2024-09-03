@@ -18,6 +18,7 @@ public class SetMCQMaxAnswerAmountHandlers(IMultipleChoiceRepository multipleCho
 
         int result = await _multipleChoiceRepository.SetMaxAnswerAmount(question);
         throw new Exception($"Choice Id is {result}");
+
     }
 }
 

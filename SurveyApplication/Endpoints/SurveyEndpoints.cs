@@ -23,7 +23,7 @@ public static class SurveyEndpoints
             return Results.Ok(response);
         });
 
-        builder.MapPost("/Survey/CreateSurvey", async (ISurveyRepository surveyRepository, IMediator mediator, CreateSurveyCommandRequest createSurveyModel) =>
+        builder.MapPost("/Surveys/CreateSurvey", async (ISurveyRepository surveyRepository, IMediator mediator, CreateSurveyCommandRequest createSurveyModel) =>
         {
             await mediator.Send(createSurveyModel);
             return Results.Created($"/survey/", createSurveyModel.Survey_Title);
