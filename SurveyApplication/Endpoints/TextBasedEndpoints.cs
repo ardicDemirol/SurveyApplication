@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using SurveyApplication.Features.TextBasedQuestion.Command.SaveAnswer;
 using SurveyApplication.Features.TextBasedQuestion.Command.SetRelation;
 using SurveyApplication.Interfaces;
@@ -14,7 +13,6 @@ public static class TextBasedEndpoints
         builder.MapPost("/TextBased/SetRelation", async (
             ITextBasedRepository repository,
             IMediator mediator,
-            IValidator<SetRelationCommandRequest> validator,
             SetRelationCommandRequest relation) =>
         {
             await mediator.Send(relation);
@@ -27,7 +25,6 @@ public static class TextBasedEndpoints
         builder.MapPost("/TextBased/SaveAnswer", async (
             ITextBasedRepository repository,
             IMediator mediator,
-            IValidator<SaveAnswerCommandRequest> validator,
             SaveAnswerCommandRequest answer) =>
         {
             await mediator.Send(answer);

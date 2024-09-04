@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 using SurveyApplication.Features.SingleChoiceQuestions.Command.SavesAnswer;
 using SurveyApplication.Interfaces;
@@ -14,7 +13,6 @@ public static class SingleChoiceEndpoints
         builder.MapPost("/SingleChoice/AddChoicesToQuestion", async (
             ISingleChoiceRepository repository,
             IMediator mediator,
-            IValidator<AddSCQChoicesCommandRequest> validator,
             AddSCQChoicesCommandRequest choice) =>
         {
             await mediator.Send(choice);
@@ -24,7 +22,6 @@ public static class SingleChoiceEndpoints
         builder.MapPost("/SingleChoice/SaveAnswer", async (
             ISingleChoiceRepository repository,
             IMediator mediator,
-            IValidator<SaveSCACommandRequest> validator,
             SaveSCACommandRequest answer) =>
         {
             await mediator.Send(answer);

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using SurveyApplication.Features.Questions.Command.CreateQuestion;
 using SurveyApplication.Features.Questions.Queries.GetAllSurveyQuestions;
 using SurveyApplication.Interfaces;
@@ -23,7 +22,6 @@ public static class QuestionEndpoints
         builder.MapPost("/Question/CreateQuestion", async (
             IQuestionRepository repository,
             IMediator mediator,
-            IValidator<CreateQuestionCommandRequest> validator,
             CreateQuestionCommandRequest createQuestionModel) =>
         {
             await mediator.Send(createQuestionModel);

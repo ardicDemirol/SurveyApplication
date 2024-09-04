@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using SurveyApplication.Features.Surveys.Command.CreateSurvey;
 using SurveyApplication.Features.Surveys.Queries.GetAllSurveys;
 using SurveyApplication.Features.Surveys.Queries.GetSurveyById;
@@ -34,7 +33,6 @@ public static class SurveyEndpoints
         builder.MapPost("/Surveys/CreateSurvey", async (
             ISurveyRepository surveyRepository,
             IMediator mediator,
-            IValidator<CreateSurveyCommandRequest> validator,
             CreateSurveyCommandRequest createSurveyModel) =>
         {
             await mediator.Send(createSurveyModel);
