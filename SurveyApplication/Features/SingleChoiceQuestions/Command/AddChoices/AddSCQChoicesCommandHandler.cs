@@ -4,7 +4,7 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 
-public class AddSCQChoicesCommandHandlers(ISingleChoiceRepository singleChoiceRepository) : IRequestHandler<AddSCQChoicesCommandRequest>
+public class AddSCQChoicesCommandHandler(ISingleChoiceRepository singleChoiceRepository) : IRequestHandler<AddSCQChoicesCommandRequest>
 {
     private readonly ISingleChoiceRepository _singleChoiceRepository = singleChoiceRepository;
 

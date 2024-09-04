@@ -1,19 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SurveyApplication.Dtos.SurveyDtos;
 
-namespace SurveyApplication.Dtos.SurveyDtos;
-
-public class SurveyDto
+public sealed record SurveyDto
 {
-    [Key]
-    public int Survey_Id { get; set; }
-    [Required]
-    public string Survey_Title { get; set; } = string.Empty;
-    public DateTime Start_Time { get; set; }
-    [Required]
-    public DateTime Finish_Time { get; set; }
-    [Required]
-    public int Completed_Count { get; set; }
-    [Required]
-    public string Company_Name { get; set; } = string.Empty;
+    public int Survey_Id { get; }
+    public string Survey_Title { get; }
+    public DateTime Start_Time { get; }
+    public DateTime Finish_Time { get; }
+    public int Completed_Count { get; }
+    public string Company_Name { get; }
 
+    private SurveyDto(string surveyTitle, DateTime startTime, DateTime finishTime, int completedCount, string companyName)
+    {
+        Survey_Title = surveyTitle;
+        Start_Time = startTime;
+        Finish_Time = finishTime;
+        Completed_Count = completedCount;
+        Company_Name = companyName;
+    }
+
+    public static SurveyDto Create(string surveyTitle, DateTime startTime, DateTime finishTime, int completedCount, string companyName)
+    {
+        return new SurveyDto(surveyTitle, startTime, finishTime, completedCount, companyName);
+    }
 }
+

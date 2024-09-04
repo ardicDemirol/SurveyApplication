@@ -1,19 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SurveyApplication.Dtos.QuestionDtos;
 
-namespace SurveyApplication.Dtos.QuestionDtos;
-public class QuestionDto
+public sealed record QuestionDto
 {
-    [Key]
-    public int Question_Id { get; set; }
-    [Required]
-    public string Question_Text { get; set; } = string.Empty;
-    public int Question_Order { get; set; }
-    [Required]
-    public char Question_Answer_Required { get; set; }
-    [Required]
-    public int Survey_Id { get; set; }
-    [Required]
-    public int Question_Type_Id { get; set; }
+    public int Question_Id { get; }
+    public string Question_Text { get; }
+    public int Question_Order { get; }
+    public char Question_Answer_Required { get; }
+    public int Survey_Id { get; }
+    public int Question_Type_Id { get; }
+
+    private QuestionDto(string questionText, char questionAnswerRequired, int surveyId, int questionTypeId)
+    {
+        Question_Text = questionText;
+        Question_Answer_Required = questionAnswerRequired;
+        Survey_Id = surveyId;
+        Question_Type_Id = questionTypeId;
+    }
+
+    public static QuestionDto Create(string questionText, char questionAnswerRequired, int surveyId, int questionTypeId)
+    {
+        return new QuestionDto(questionText, questionAnswerRequired, surveyId, questionTypeId);
+    }
 }
+
 
 

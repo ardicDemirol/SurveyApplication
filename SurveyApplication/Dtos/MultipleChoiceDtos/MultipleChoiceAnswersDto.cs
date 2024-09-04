@@ -1,13 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SurveyApplication.Dtos.MultipleChoiceDtos;
 
-namespace SurveyApplication.Dtos.MultipleChoiceDtos;
-
-public class MultipleChoiceAnswersDto
+public sealed record MultipleChoiceAnswersDto
 {
-    [Key]
-    public int Answer_Id { get; set; }
-    [Required]
-    public string Answer { get; set; } = string.Empty;
-    [Required]
-    public int Question_Id { get; set; }
+    public int Answer_Id { get; }
+    public string Answer { get; }
+    public int Question_Id { get; }
+
+    private MultipleChoiceAnswersDto(string answer, int questionId)
+    {
+        Answer = answer;
+        Question_Id = questionId;
+    }
+
+    public static MultipleChoiceAnswersDto Create(string answer, int questionId)
+    {
+        if (string.IsNullOrWhiteSpace(answer)) throw new ArgumentException("Answer cannot be empty.");
+
+        return new MultipleChoiceAnswersDto(answer, questionId);
+    }
 }
+

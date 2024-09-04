@@ -11,15 +11,13 @@ public class QuestionsAndAnswersRepository(IDatabaseConnectionProvider databaseC
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string getSingleChoiceQuestionQuery = """
-                                              SELECT question_id, question_text, choice, answers
-                                              FROM questions_and_answers
-                                              WHERE survey_id = @surveyId
-                                              """;
+        string getQuestionsQuery = """
+                                   SELECT question_id, question_text, answers
+                                   FROM questions_and_answers
+                                   WHERE survey_id = @surveyId
+                                   """;
 
-
-        var questionsAndAnswers = await connection.QueryAsync<QuestionsAndAnswersViewDto>(getSingleChoiceQuestionQuery, new { surveyId });
-
+        var questionsAndAnswers = await connection.QueryAsync<QuestionsAndAnswersViewDto>(getQuestionsQuery, new { surveyId });
         return questionsAndAnswers;
     }
 }

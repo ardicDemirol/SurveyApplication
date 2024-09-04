@@ -3,7 +3,7 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.Surveys.Queries.GetAllSurveys;
 
-public class GetAllSurveysQueryHandlers(ISurveyRepository repository) : IRequestHandler<GetAllSurveysQueryRequest, IList<GetAllSurveysQueryResponse>>
+public class GetAllSurveysQueryHandler(ISurveyRepository repository) : IRequestHandler<GetAllSurveysQueryRequest, IList<GetAllSurveysQueryResponse>>
 {
     private readonly ISurveyRepository _repository = repository;
 

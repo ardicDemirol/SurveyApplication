@@ -31,7 +31,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         await connection.ExecuteAsync(insertQuestion, parameters);
     }
 
-    public async Task<IEnumerable<QuestionChoicesViewDto>> GetAllQuestions<T>(int surveyId)
+    public async Task<IEnumerable<QuestionChoicesViewDto>> GetAllSurveyQuestions<T>(int surveyId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
@@ -45,14 +45,28 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
         if (existingSurveyCount < 1) throw new Exception("No such survey was found");
 
-        string getSingleChoiceQuestionQuery = """
+        string getQuestionsWithChoicesQuery = """
                                               SELECT question_id, question_text,choice
                                               FROM question_choices_view
                                               WHERE survey_id = @surveyId
                                               """;
 
-        var choices = await connection.QueryAsync<QuestionChoicesViewDto>(getSingleChoiceQuestionQuery, new { surveyId });
-        return choices;
+        string getQuestionsTextBasedQuery = """
+                                              SELECT question_id, question_text
+                                              FROM question
+                                              WHERE survey_id = @surveyId
+                                              AND question_type_id = 4
+                                              """;
+
+
+        var choices = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsWithChoicesQuery, new { surveyId });
+
+        var choicesTextBased = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsTextBasedQuery, new { surveyId });
+
+        var allChoices = choices.Concat(choicesTextBased)
+            .OrderBy(c => c.Question_Id);
+
+        return allChoices;
 
     }
 }

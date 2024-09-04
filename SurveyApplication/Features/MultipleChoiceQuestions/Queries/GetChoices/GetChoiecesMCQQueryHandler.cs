@@ -2,7 +2,7 @@
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.MultipleChoiceQuestions.Queries.GetChoices;
-public class GetChoiecesMCQQueryHandlers(IMultipleChoiceRepository multipleChoiceRepository) : IRequestHandler<GetChoicesMCQQueryRequest, IList<GetChoicesMCQQueryResponse>>
+public class GetChoiecesMCQQueryHandler(IMultipleChoiceRepository multipleChoiceRepository) : IRequestHandler<GetChoicesMCQQueryRequest, IList<GetChoicesMCQQueryResponse>>
 {
     private readonly IMultipleChoiceRepository _multipleChoiceRepository = multipleChoiceRepository;
 

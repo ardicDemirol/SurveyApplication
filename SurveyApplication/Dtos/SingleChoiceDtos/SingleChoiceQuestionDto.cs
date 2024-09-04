@@ -1,6 +1,6 @@
 ﻿namespace SurveyApplication.Dtos.SingleChoiceDtos;
 
-public class SingleChoiceQuestionDto
+public sealed record SingleChoiceQuestionDto
 {
     public int Choice_Id { get; }
     public string First_Choice { get; }

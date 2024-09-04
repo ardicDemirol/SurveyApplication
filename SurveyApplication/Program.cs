@@ -1,5 +1,5 @@
 using SurveyApplication.Endpoints;
-using SurveyApplication.Helpers;
+using SurveyApplication.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

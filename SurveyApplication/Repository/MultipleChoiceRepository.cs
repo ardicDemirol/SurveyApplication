@@ -46,8 +46,6 @@ namespace SurveyApplication.Repository
             };
 
             return await connection.ExecuteScalarAsync<int>(insertCommand, parameters);
-
-            //await connection.ExecuteAsync(insertCommand, parameters);
         }
 
         public async Task AddChoice(MultipleOtherChoicesDto newChoice)

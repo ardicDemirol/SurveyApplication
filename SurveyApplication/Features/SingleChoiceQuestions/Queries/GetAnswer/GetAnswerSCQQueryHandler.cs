@@ -3,7 +3,7 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.SingleChoiceQuestions.Queries.GetAnswer;
 
-public class GetAnswerSCQQueryHandlers(ISingleChoiceRepository singleChoiceRepository) : IRequestHandler<GetAnswerSCQQueryRequest, GetAnswerSCQQueryResponse>
+public class GetAnswerSCQQueryHandler(ISingleChoiceRepository singleChoiceRepository) : IRequestHandler<GetAnswerSCQQueryRequest, GetAnswerSCQQueryResponse>
 {
     private readonly ISingleChoiceRepository _singleChoiceRepository = singleChoiceRepository;
     public async Task<GetAnswerSCQQueryResponse> Handle(GetAnswerSCQQueryRequest request, CancellationToken cancellationToken)

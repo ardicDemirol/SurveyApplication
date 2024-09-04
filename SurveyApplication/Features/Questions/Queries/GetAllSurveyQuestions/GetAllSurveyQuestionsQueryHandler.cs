@@ -3,12 +3,12 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.Questions.Queries.GetAllSurveyQuestions;
 
-public class GetAllSurveyQuestionsQueryHandlers(IQuestionRepository questionRepository) : IRequestHandler<GetAllSurveyQuestionsQueryRequest, IList<GetAllSurveyQuestionsQueryResponse>>
+public class GetAllSurveyQuestionsQueryHandler(IQuestionRepository questionRepository) : IRequestHandler<GetAllSurveyQuestionsQueryRequest, IList<GetAllSurveyQuestionsQueryResponse>>
 {
     private readonly IQuestionRepository _questionRepository = questionRepository;
     public async Task<IList<GetAllSurveyQuestionsQueryResponse>> Handle(GetAllSurveyQuestionsQueryRequest request, CancellationToken cancellationToken)
     {
-        var questions = await _questionRepository.GetAllQuestions<GetAllSurveyQuestionsQueryResponse>(request.Survey_Id);
+        var questions = await _questionRepository.GetAllSurveyQuestions<GetAllSurveyQuestionsQueryResponse>(request.Survey_Id);
 
         List<GetAllSurveyQuestionsQueryResponse> response = [];
 

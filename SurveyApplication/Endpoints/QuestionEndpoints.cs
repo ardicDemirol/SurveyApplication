@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using SurveyApplication.Features.Questions.Command.CreateQuestion;
 using SurveyApplication.Features.Questions.Queries.GetAllSurveyQuestions;
 using SurveyApplication.Interfaces;
+using SurveyApplication.Validation;
 
 namespace SurveyApplication.Endpoints;
 
@@ -17,11 +19,15 @@ public static class QuestionEndpoints
         });
 
 
-        builder.MapPost("/Question/CreateQuestion", async (IQuestionRepository repository, IMediator mediator, CreateQuestionCommandRequest createQuestionModel) =>
+
+        builder.MapPost("/Question/CreateQuestion", async (
+            IQuestionRepository repository,
+            IMediator mediator,
+            IValidator<CreateQuestionCommandRequest> validator,
+            CreateQuestionCommandRequest createQuestionModel) =>
         {
-            var response = await mediator.Send(createQuestionModel);
-            return response;
-        });
+            await mediator.Send(createQuestionModel);
+        }).AddEndpointFilter<ValidatorFilter<CreateQuestionCommandRequest>>();
 
 
     }

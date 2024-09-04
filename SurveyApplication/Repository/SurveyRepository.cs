@@ -7,7 +7,6 @@ namespace SurveyApplication.Repository;
 public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ISurveyRepository
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
-
     public async Task CreateSurvey<T>(SurveyDto survey)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
@@ -34,7 +33,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         var parameters = new
         {
             name = survey.Survey_Title,
-            startTime = DateTime.Now,
+            startTime = survey.Start_Time,
             finishTime = survey.Finish_Time,
             companyName = survey.Company_Name
         };
@@ -42,7 +41,6 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
         var newSurvey = await connection.ExecuteAsync(insertSurvey, parameters);
     }
-
     public async Task<T> GetSurveyById<T>(int surveyId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
@@ -60,7 +58,6 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
         return result ?? throw new Exception("Survey not found");
     }
-
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
@@ -73,6 +70,4 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         var surveys = await connection.QueryAsync<T>(commandText);
         return surveys ?? throw new Exception("Survey not found");
     }
-
-
 }
