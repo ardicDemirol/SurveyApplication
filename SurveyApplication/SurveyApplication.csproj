@@ -13,6 +13,7 @@
     <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.Garnet" Version="1.0.19" />
     <PackageReference Include="Npgsql" Version="8.0.3" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

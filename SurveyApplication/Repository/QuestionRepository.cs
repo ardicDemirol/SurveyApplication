@@ -8,6 +8,8 @@ namespace SurveyApplication.Repository;
 public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : IQuestionRepository
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+    private readonly IGarnetClient _garnetClient = garnetClient;
+
 
     public async Task CreateQuestion(QuestionDto question)
     {
@@ -29,6 +31,8 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
             questionTypeId = question.Question_Type_Id
         };
 
+        await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{question.Survey_Id}");
+        await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{question.Survey_Id}");
         await connection.ExecuteAsync(insertQuestion, parameters);
     }
 
@@ -36,7 +40,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        var cacheKey = $"SurveyQuestions_{surveyId}";
+        var cacheKey = $"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}";
         var cachedData = await garnetClient.GetValue(cacheKey);
 
         if (!string.IsNullOrEmpty(cachedData))
@@ -80,7 +84,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
             .OrderBy(c => c.Question_Id);
 
 
-        await garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(allChoices));
+        await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(allChoices));
 
         return allChoices;
 

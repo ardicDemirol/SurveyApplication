@@ -1,12 +1,14 @@
 ﻿using Dapper;
 using SurveyApplication.Dtos.MultipleChoiceDtos;
+using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository
 {
-    public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider) : IMultipleChoiceRepository
+    public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : IMultipleChoiceRepository
     {
         private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+        private readonly IGarnetClient _garnetClient = garnetClient;
 
         public async Task<int> SetMaxAnswerAmount(MultipleChoiceDto question)
         {
@@ -64,6 +66,26 @@ namespace SurveyApplication.Repository
             };
 
             await connection.ExecuteAsync(insertCommand, parameters);
+
+
+
+            string questionIdQuery = """
+                                 SELECT question_id
+                                 FROM multiple_choice_questions
+                                 WHERE choice_id = @multiple_Choice_Question_Id
+                                 """;
+            int questionId = await connection.ExecuteScalarAsync<int>(questionIdQuery, new { newChoice.Multiple_Choice_Question_Id });
+
+            string surveyIdQuery = """
+                                 SELECT survey_id
+                                 FROM question
+                                 WHERE question_id = @questionId
+                                 """;
+            int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { questionId });
+
+            await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}");
+            await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}");
+
         }
 
         public async Task SaveAnswer(MultipleChoiceAnswersDto answerModel)
@@ -74,13 +96,6 @@ namespace SurveyApplication.Repository
                                    INSERT INTO multiple_choice_answers (answer,question_id) 
                                    VALUES (@answer,@questionId)
                                    """;
-
-
-            //string checkMaxAnswerQuery = """
-            //                             SELECT COUNT(1) AS count, max_choice_amount
-            //                             FROM multiple_choice_questions
-            //                             WHERE question_id = @questionId
-            //                             """;
 
             string checkMaxAnswerQuery = """
                                          SELECT MAX(max_choice_amount) AS max_choice_amount
@@ -105,6 +120,8 @@ namespace SurveyApplication.Repository
                                      )
                                      """;
 
+
+
             var parameters = new
             {
                 answer = answerModel.Answer,
@@ -120,24 +137,17 @@ namespace SurveyApplication.Repository
 
             if (matchedAnswerCount >= maxAnswerAmount) throw new Exception("You have reached the maximum number of answers");
 
+            string surveyIdQuery = """
+                                 SELECT survey_id
+                                 FROM question
+                                 WHERE question_id = @question_Id
+                                 """;
+            int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { answerModel.Question_Id });
+
+            await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}");
+            await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}");
+
             await connection.ExecuteAsync(insertCommand, parameters);
-        }
-
-        public async Task<IEnumerable<T>> GetChoices<T>(int questionId)
-        {
-            using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-            string getChoicesViewQuery = """
-                                         SELECT STRING_AGG(oc.choice, ',') AS Choice
-                                         FROM other_choices oc
-                                         JOIN multiple_choice_questions mcq
-                                            ON oc.multiple_choice_questions_id = mcq.choice_id
-                                         WHERE mcq.question_id = @question_id
-                                         """;
-
-
-            var questions = await connection.QueryAsync<T>(getChoicesViewQuery, questionId);
-            return questions ?? throw new Exception("No such question was found");
         }
     }
 }

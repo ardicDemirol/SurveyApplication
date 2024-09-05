@@ -1,12 +1,16 @@
 ﻿using Dapper;
 using SurveyApplication.Dtos.SurveyDtos;
+using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
+using System.Text.Json;
 
 namespace SurveyApplication.Repository;
 
-public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ISurveyRepository
+public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISurveyRepository
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+    private readonly IGarnetClient _garnetClient = garnetClient;
+
     public async Task CreateSurvey<T>(SurveyDto survey)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
@@ -38,15 +42,29 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
             companyName = survey.Company_Name
         };
 
-
         var newSurvey = await connection.ExecuteAsync(insertSurvey, parameters);
+
+        await _garnetClient.DeleteValue(CacheKeys.AllSurveysCacheKey);
     }
+
     public async Task<T> GetSurveyById<T>(int surveyId)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
+        var cacheKey = $"{CacheKeys.SurveyCacheKey}{surveyId}";
+        var cachedData = await garnetClient.GetValue(cacheKey);
+
+        if (!string.IsNullOrEmpty(cachedData))
+        {
+            return JsonSerializer.Deserialize<T>(cachedData);
+        }
+
         string queryText = """
-                             SELECT survey_title AS SurveyTitle, start_time AS StartTime,finish_time AS FinishTime, completed_count AS CompletedCount
+                             SELECT 
+                                survey_title AS SurveyTitle,
+                                start_time AS StartTime,
+                                finish_time AS FinishTime,
+                                completed_count AS CompletedCount
                              FROM surveys
                              WHERE survey_id = @surveyId
                              """;
@@ -55,12 +73,22 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         var parameters = new { surveyId };
         var result = await connection.QueryFirstOrDefaultAsync<T>(queryText, parameters);
 
+        await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(result));
 
         return result ?? throw new Exception("Survey not found");
     }
+
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+
+        var cacheKey = CacheKeys.AllSurveysCacheKey;
+        var cachedData = await garnetClient.GetValue(cacheKey);
+
+        if (!string.IsNullOrEmpty(cachedData))
+        {
+            return JsonSerializer.Deserialize<List<T>>(cachedData);
+        }
 
         string commandText = """
                             SELECT survey_id, survey_title
@@ -68,6 +96,9 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
                             """;
 
         var surveys = await connection.QueryAsync<T>(commandText);
+
+        await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(surveys));
+
         return surveys ?? throw new Exception("Survey not found");
     }
 }

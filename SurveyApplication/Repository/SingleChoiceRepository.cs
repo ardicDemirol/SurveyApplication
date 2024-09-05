@@ -1,12 +1,14 @@
 ﻿using Dapper;
 using SurveyApplication.Dtos.SingleChoiceDtos;
+using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository;
 
-public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ISingleChoiceRepository
+public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISingleChoiceRepository
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+    private readonly IGarnetClient _garnetClient = garnetClient;
 
     public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
     {
@@ -17,12 +19,23 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
                               VALUES (@firstChoice,@secondChoice,@questionId)
                               """;
 
+        string surveyIdQuery = """
+                              SELECT survey_id
+                              FROM question
+                              WHERE question_id = @questionId
+                              """;
+
+        int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { questionId = singleChoice.Question_Id });
+
         var parameters = new
         {
             firstChoice = singleChoice.First_Choice,
             secondChoice = singleChoice.Second_Choice,
             questionId = singleChoice.Question_Id
         };
+
+        await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}");
+        await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}");
 
         await connection.ExecuteAsync(insertCommand, parameters);
     }
@@ -72,16 +85,6 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
         if (existingQuestionCount < 1) throw new Exception("No such question was found");
 
-        //char charValue = await connection.ExecuteScalarAsync<char>(checkIsMandatory,
-        //    new
-        //    {
-        //        questionId = answer.Question_Id,
-        //        surveyId = answer.Survey_Id
-        //    });
-        //bool isMandatory;
-        //if (charValue.ToString() == "N") isMandatory = false;
-        //else isMandatory = true;
-
         var validChoices = connection.Query(getChoicesQuery, new { questionId = answer.Question_Id })
                                  .SelectMany(row => new List<string> { row.first_choice, row.second_choice })
                                  .ToList();
@@ -105,6 +108,9 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
             questionId = answer.Question_Id,
             surveyId = answer.Survey_Id,
         };
+
+        await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{answer.Survey_Id}");
+        await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{answer.Survey_Id}");
 
         await connection.ExecuteAsync(insertAnswerCommand, parameters);
     }

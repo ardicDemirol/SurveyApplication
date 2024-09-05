@@ -9,7 +9,7 @@ public class CreateQuestionValidator : AbstractValidator<CreateQuestionCommandRe
         RuleFor(request => request.Question_Text)
             .NotEmpty().WithMessage("Question text must not be empty.")
             .NotNull().WithMessage("Question text must not be null")
-            .MinimumLength(10).WithMessage("Question text must be at least 1 character long.")
+            .MinimumLength(10).WithMessage("Question text must be at least 10 character long.")
             .MaximumLength(150).WithMessage("Question text cannot exceed 150 characters.");
 
         RuleFor(request => request.Question_Answer_Required)

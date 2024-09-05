@@ -5,18 +5,40 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Repository;
 
-public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionProvider) : ITextBasedRepository
+public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ITextBasedRepository
 {
+    #region Variables
+
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
+    private readonly IGarnetClient _garnetClient = garnetClient;
+
+    static readonly string answerCommand = """
+                              INSERT INTO text_based_answer (answer,question_id) 
+                              VALUES (@answer,@questionId)
+                              """;
+
+    static readonly string setRelationCommand = """
+                              INSERT INTO text_based_question_type_relationship (text_type_id,question_id) 
+                              VALUES (@textTypeId,@questionId)
+                              """;
+
+    static readonly string getTextTypeCommand = """
+                              SELECT text_type_id
+                              FROM text_based_question_type_relationship
+                              WHERE question_id = @questionId
+                              """;
+
+    static readonly string surveyIdCommand = """
+                              SELECT survey_id
+                              FROM question
+                              WHERE question_id = @questionId
+                              """;
+
+    #endregion
 
     public async Task SetRelation(TextBasedQuestionTypeRelationshipDto relation)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-        string setRelationCommand = """
-                              INSERT INTO text_based_question_type_relationship (text_type_id,question_id) 
-                              VALUES (@textTypeId,@questionId)
-                              """;
 
         var parameters = new
         {
@@ -31,16 +53,6 @@ public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionP
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
-        string setRelationCommand = """
-                              INSERT INTO text_based_answer (answer,question_id) 
-                              VALUES (@answer,@questionId)
-                              """;
-
-        string getTextTypeCommand = """
-                              SELECT text_type_id
-                              FROM text_based_question_type_relationship
-                              WHERE question_id = @questionId
-                              """;
 
         int textTypeId = await connection.ExecuteScalarAsync<int>(getTextTypeCommand, new { questionId = answer.Question_Id });
 
@@ -54,7 +66,15 @@ public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionP
             questionId = answer.Question_Id
         };
 
-        await connection.ExecuteScalarAsync(setRelationCommand, parameters);
+
+        int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdCommand, new { questionId = answer.Question_Id });
+
+
+        await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}");
+        await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}");
+
+
+        await connection.ExecuteScalarAsync(answerCommand, parameters);
     }
 
 }
