@@ -2,9 +2,10 @@
 using SurveyApplication.Dtos.QuestionDtos;
 using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
+using System.Text.Json;
 
 namespace SurveyApplication.Repository;
-public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionProvider) : IQuestionRepository
+public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : IQuestionRepository
 {
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
 
@@ -35,6 +36,15 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
+        var cacheKey = $"SurveyQuestions_{surveyId}";
+        var cachedData = await garnetClient.GetValue(cacheKey);
+
+        if (!string.IsNullOrEmpty(cachedData))
+        {
+            return JsonSerializer.Deserialize<List<QuestionChoicesViewDto>>(cachedData);
+        }
+
+
         string checkSurveyQuery = """
                                   SELECT COUNT(1)
                                   FROM surveys 
@@ -44,6 +54,9 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         int existingSurveyCount = await connection.ExecuteScalarAsync<int>(checkSurveyQuery, new { surveyId });
 
         if (existingSurveyCount < 1) throw new Exception("No such survey was found");
+
+
+
 
         string getQuestionsWithChoicesQuery = """
                                               SELECT question_id, question_text,choice
@@ -65,6 +78,9 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
         var allChoices = choices.Concat(choicesTextBased)
             .OrderBy(c => c.Question_Id);
+
+
+        await garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(allChoices));
 
         return allChoices;
 

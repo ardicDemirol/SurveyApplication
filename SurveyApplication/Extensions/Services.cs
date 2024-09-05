@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SurveyApplication.Caching;
 using SurveyApplication.Data;
 using SurveyApplication.Interfaces;
 using SurveyApplication.Repository;
@@ -22,6 +23,7 @@ public static class Services
         services.AddScoped<IQuestionsAndAnswersRepository, QuestionsAndAnswersRepository>();
         services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
 
+
         var assembly = Assembly.GetExecutingAssembly();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assembly));
 
@@ -34,6 +36,8 @@ public static class Services
         services.AddValidatorsFromAssemblyContaining<SaveAnswerMCQValidator>();
         services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSetRelationValidator>();
         services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSaveAnswerValidator>();
+
+        services.AddScoped<IGarnetClient, MyGarnetClient>();
 
     }
 }
