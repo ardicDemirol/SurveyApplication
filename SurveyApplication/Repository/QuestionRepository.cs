@@ -7,9 +7,36 @@ using System.Text.Json;
 namespace SurveyApplication.Repository;
 public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : IQuestionRepository
 {
+    #region Fields
+
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
     private readonly IGarnetClient _garnetClient = garnetClient;
 
+    private static readonly string insertQuestion = """
+                                INSERT INTO question (question_text, question_order, question_answer_required,survey_id,question_type_id)
+                                VALUES (@questionText,@questionOrder,@questionAnswerRequired,@surveyId,@questionTypeId)
+                                """;
+
+    private static readonly string checkSurveyQuery = """
+                                  SELECT COUNT(1)
+                                  FROM surveys 
+                                  WHERE survey_id = @surveyId
+                                  """;
+
+    private static readonly string getQuestionsWithChoicesQuery = """
+                                              SELECT question_id, question_text,choice
+                                              FROM question_choices_view
+                                              WHERE survey_id = @surveyId
+                                              """;
+
+    private static readonly string getQuestionsTextBasedQuery = """
+                                              SELECT question_id, question_text
+                                              FROM question
+                                              WHERE survey_id = @surveyId
+                                              AND question_type_id = 4
+                                              """;
+
+    #endregion
 
     public async Task CreateQuestion(QuestionDto question)
     {
@@ -17,10 +44,6 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
         int newQuestionOrderId = await connection.GetNextIdAsync("question", "question_order", "survey_id", question.Survey_Id) + 1;
 
-        string insertQuestion = """
-                                INSERT INTO question (question_text, question_order, question_answer_required,survey_id,question_type_id)
-                                VALUES (@questionText,@questionOrder,@questionAnswerRequired,@surveyId,@questionTypeId)
-                                """;
 
         var parameters = new
         {
@@ -48,41 +71,17 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
             return JsonSerializer.Deserialize<List<QuestionChoicesViewDto>>(cachedData);
         }
 
-
-        string checkSurveyQuery = """
-                                  SELECT COUNT(1)
-                                  FROM surveys 
-                                  WHERE survey_id = @surveyId
-                                  """;
-
         int existingSurveyCount = await connection.ExecuteScalarAsync<int>(checkSurveyQuery, new { surveyId });
 
         if (existingSurveyCount < 1) throw new Exception("No such survey was found");
-
-
-
-
-        string getQuestionsWithChoicesQuery = """
-                                              SELECT question_id, question_text,choice
-                                              FROM question_choices_view
-                                              WHERE survey_id = @surveyId
-                                              """;
-
-        string getQuestionsTextBasedQuery = """
-                                              SELECT question_id, question_text
-                                              FROM question
-                                              WHERE survey_id = @surveyId
-                                              AND question_type_id = 4
-                                              """;
-
 
         var choices = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsWithChoicesQuery, new { surveyId });
 
         var choicesTextBased = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsTextBasedQuery, new { surveyId });
 
-        var allChoices = choices.Concat(choicesTextBased)
+        var allChoices = choices
+            .Concat(choicesTextBased)
             .OrderBy(c => c.Question_Id);
-
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(allChoices));
 

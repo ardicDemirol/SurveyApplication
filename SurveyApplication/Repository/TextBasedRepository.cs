@@ -58,7 +58,7 @@ public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionP
 
         bool control = ResponseTypeControl.ControlResponseType(answer.Answer, textTypeId);
 
-        if (!control) throw new Exception("Answer type is not true");
+        if (!control) throw new ArgumentException("Answer type is not true");
 
         var parameters = new
         {

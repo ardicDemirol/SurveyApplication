@@ -8,31 +8,51 @@ namespace SurveyApplication.Repository;
 
 public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISurveyRepository
 {
+    #region Fields
+
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
     private readonly IGarnetClient _garnetClient = garnetClient;
 
-    public async Task CreateSurvey<T>(SurveyDto survey)
-    {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-        string checkCompanyExists = """
+    private static readonly string checkCompanyExistsQuery = """
                                     SELECT company_id 
                                     FROM company 
                                     WHERE company_name = @companyName
                                     """;
-        string insertCompany = """
+
+    private static readonly string insertCompanyCommand = """
                                INSERT INTO company (company_name)
                                VALUES (@companyName)
                                RETURNING company_id
                                """;
-        string insertSurvey = """
+
+    private static readonly string insertSurveyCommand = """
                               INSERT INTO surveys (survey_title, start_time, finish_time, completed_count, company_name)
                               VALUES (@name, @startTime, @finishTime, 0, @companyName)
                               """;
 
-        int? companyId = await connection.ExecuteScalarAsync<int?>(checkCompanyExists, new { companyName = survey.Company_Name });
+    private static readonly string getSurveyByIdQuery = """
+                             SELECT 
+                                survey_title AS SurveyTitle,
+                                start_time AS StartTime,
+                                finish_time AS FinishTime,
+                                completed_count AS CompletedCount
+                             FROM surveys
+                             WHERE survey_id = @surveyId
+                             """;
 
-        companyId ??= await connection.ExecuteScalarAsync<int>(insertCompany, new { companyName = survey.Company_Name });
+    private static readonly string getAllSurveyCommand = """
+                            SELECT survey_id, survey_title
+                            FROM surveys
+                            """;
+
+    #endregion
+    public async Task CreateSurvey<T>(SurveyDto survey)
+    {
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+
+        int? companyId = await connection.ExecuteScalarAsync<int?>(checkCompanyExistsQuery, new { companyName = survey.Company_Name });
+
+        companyId ??= await connection.ExecuteScalarAsync<int>(insertCompanyCommand, new { companyName = survey.Company_Name });
 
         var parameters = new
         {
@@ -42,7 +62,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
             companyName = survey.Company_Name
         };
 
-        var newSurvey = await connection.ExecuteAsync(insertSurvey, parameters);
+        var newSurvey = await connection.ExecuteAsync(insertSurveyCommand, parameters);
 
         await _garnetClient.DeleteValue(CacheKeys.AllSurveysCacheKey);
     }
@@ -59,19 +79,8 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
             return JsonSerializer.Deserialize<T>(cachedData);
         }
 
-        string queryText = """
-                             SELECT 
-                                survey_title AS SurveyTitle,
-                                start_time AS StartTime,
-                                finish_time AS FinishTime,
-                                completed_count AS CompletedCount
-                             FROM surveys
-                             WHERE survey_id = @surveyId
-                             """;
-
-
         var parameters = new { surveyId };
-        var result = await connection.QueryFirstOrDefaultAsync<T>(queryText, parameters);
+        var result = await connection.QueryFirstOrDefaultAsync<T>(getSurveyByIdQuery, parameters);
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(result));
 
@@ -90,12 +99,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
             return JsonSerializer.Deserialize<List<T>>(cachedData);
         }
 
-        string commandText = """
-                            SELECT survey_id, survey_title
-                            FROM surveys
-                            """;
-
-        var surveys = await connection.QueryAsync<T>(commandText);
+        var surveys = await connection.QueryAsync<T>(getAllSurveyCommand);
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(surveys));
 

@@ -7,23 +7,52 @@ namespace SurveyApplication.Repository;
 
 public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISingleChoiceRepository
 {
+    #region Fields
+
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
     private readonly IGarnetClient _garnetClient = garnetClient;
 
-    public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
-    {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-        string insertCommand = """
+    private static readonly string insertChoiceCommand = """
                               INSERT INTO single_choice_questions (first_choice,second_choice,question_id) 
                               VALUES (@firstChoice,@secondChoice,@questionId)
                               """;
 
-        string surveyIdQuery = """
+    private static readonly string surveyIdQuery = """
                               SELECT survey_id
                               FROM question
                               WHERE question_id = @questionId
                               """;
+
+    private static readonly string checkQuestionQuery = """ 
+                                    SELECT COUNT(1)
+                                    FROM question 
+                                    WHERE question_id = @questionId     
+                                        AND survey_id = @surveyId
+                                    """;
+
+    private static readonly string getChoicesQuery = """
+                                 SELECT first_choice, second_choice 
+                                 FROM single_choice_questions 
+                                 WHERE question_id = @questionId
+                                 """;
+
+    private static readonly string checkQuery = """
+                            SELECT COUNT(1)
+                            FROM single_choice_answers 
+                            WHERE question_id = @questionId 
+                                AND survey_id = @surveyId
+                            """;
+
+    private static readonly string insertAnswerCommand = """
+                            INSERT INTO single_choice_answers (answer,question_id,survey_id) 
+                            VALUES (@answer,@questionId,@surveyId)
+                            """;
+
+
+    #endregion
+    public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
+    {
+        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
 
         int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { questionId = singleChoice.Question_Id });
 
@@ -37,44 +66,12 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}");
         await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}");
 
-        await connection.ExecuteAsync(insertCommand, parameters);
+        await connection.ExecuteAsync(insertChoiceCommand, parameters);
     }
 
     public async Task SaveAnswer(SingleChoiceAnswerDto answer)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-        string checkQuestionQuery = """ 
-                                    SELECT COUNT(1)
-                                    FROM question 
-                                    WHERE question_id = @questionId     
-                                        AND survey_id = @surveyId
-                                    """;
-
-        string getChoicesQuery = """
-                                 SELECT first_choice, second_choice 
-                                 FROM single_choice_questions 
-                                 WHERE question_id = @questionId
-                                 """;
-
-        string checkIsMandatory = """ 
-                                  SELECT question_answer_required 
-                                  FROM question 
-                                  WHERE question_id = @questionId 
-                                    AND survey_id = @surveyId
-                                  """;
-
-        string checkQuery = """
-                            SELECT COUNT(1)
-                            FROM single_choice_answers 
-                            WHERE question_id = @questionId 
-                                AND survey_id = @surveyId
-                            """;
-
-        string insertAnswerCommand = """
-                            INSERT INTO single_choice_answers (answer,question_id,survey_id) 
-                            VALUES (@answer,@questionId,@surveyId)
-                            """;
 
         int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestionQuery,
             new
@@ -114,21 +111,4 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
         await connection.ExecuteAsync(insertAnswerCommand, parameters);
     }
-
-
-    public async Task<T> GetAnswer<T>(int questionId)
-    {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
-
-        string commandText = """
-            SELECT answer
-            FROM single_choice_answers
-            WHERE question_id = @questionId 
-            """;
-
-        var answer = await connection.QueryFirstOrDefaultAsync<T>(commandText, new { questionId });
-
-        return answer ?? throw new Exception("Answer not found");
-    }
-
 }

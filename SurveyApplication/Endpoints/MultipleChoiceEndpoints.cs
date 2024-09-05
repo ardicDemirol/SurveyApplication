@@ -11,12 +11,13 @@ public static class MultipleChoiceEndpoints
 {
     public static void MapMultipleChoiceEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/MultipleChoice/SetMaxChoiceAmount", async (
+        builder.MapPost("/MultipleChoice/SetMaxAnswerAmount", async (
             IMultipleChoiceRepository repository,
             IMediator mediator,
             SetMCQMaxAnswerAmountRequest choice) =>
         {
-            await mediator.Send(choice);
+            var response = await mediator.Send(choice);
+            return Results.Ok("Choice Id " + response);
         }).AddEndpointFilter<ValidatorFilter<SetMCQMaxAnswerAmountRequest>>();
 
 

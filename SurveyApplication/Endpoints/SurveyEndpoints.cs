@@ -21,6 +21,7 @@ public static class SurveyEndpoints
         });
 
 
+
         builder.MapGet("/Surveys/GetAllSurveys", async (
             ISurveyRepository repository,
             IMediator mediator) =>
