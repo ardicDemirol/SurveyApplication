@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using Hangfire;
 using SurveyApplication.Dtos.SurveyDtos;
 using SurveyApplication.Extensions;
 using SurveyApplication.Interfaces;
+using SurveyApplication.Services.Email.Interfaces;
 using System.Text.Json;
 
 namespace SurveyApplication.Repository;
@@ -12,6 +14,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
     private readonly IDatabaseConnectionProvider _databaseConnectionProvider = databaseConnectionProvider;
     private readonly IGarnetClient _garnetClient = garnetClient;
+    private static readonly string receiverEmail = "sereb10824@obisims.com";
 
     private static readonly string checkCompanyExistsQuery = """
                                     SELECT company_id 
@@ -65,6 +68,15 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         var newSurvey = await connection.ExecuteAsync(insertSurveyCommand, parameters);
 
         await _garnetClient.DeleteValue(CacheKeys.AllSurveysCacheKey);
+
+
+        var jobId = BackgroundJob.Enqueue<IEmailService>(x => x.SendEmailAsync(
+                    receiverEmail,
+                    "New Survey Added to Su Bilgi Survey System",
+                    $"New Survey {survey.Survey_Title} added to Su Bilgi Survey System"
+                    ));
+
+        //var jobId = BackgroundJob.Schedule<IEmailService>(x => x.SendSurveyCreatedEmail("test@gmail.com", survey.Survey_Title), TimeSpan.FromMinutes(1));
     }
 
     public async Task<T> GetSurveyById<T>(int surveyId)

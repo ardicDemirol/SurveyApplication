@@ -3,13 +3,9 @@ using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Data;
 
-public class DatabaseConnectionProvider : IDatabaseConnectionProvider
+public class DatabaseConnectionProvider(IConfiguration configuration) : IDatabaseConnectionProvider
 {
-    private readonly IConfiguration _configuration;
-    public DatabaseConnectionProvider(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
+    private readonly IConfiguration _configuration = configuration;
 
     public async Task<NpgsqlConnection> GetOpenConnectionAsync()
     {

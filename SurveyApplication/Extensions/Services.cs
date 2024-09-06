@@ -1,8 +1,12 @@
 ﻿using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using SurveyApplication.Caching;
 using SurveyApplication.Data;
 using SurveyApplication.Interfaces;
 using SurveyApplication.Repository;
+using SurveyApplication.Services.Email;
+using SurveyApplication.Services.Email.Interfaces;
 using SurveyApplication.Validations.MultipleChoiceValidations;
 using SurveyApplication.Validations.QuestionValidations;
 using SurveyApplication.Validations.SingleChoiceValidations;
@@ -38,6 +42,20 @@ public static class Services
         services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSaveAnswerValidator>();
 
         services.AddScoped<IGarnetClient, MyGarnetClient>();
+
+
+        string connectionString = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(options =>
+            {
+                options.UseNpgsqlConnection(connectionString);
+            }));
+
+        services.AddHangfireServer();
+        services.AddTransient<IEmailService, EmailService>();
 
 
 

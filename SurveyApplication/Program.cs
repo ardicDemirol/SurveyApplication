@@ -1,3 +1,4 @@
+using Hangfire;
 using SurveyApplication.Endpoints;
 using SurveyApplication.Extensions;
 
@@ -8,7 +9,6 @@ Task.Run(() =>
     Thread.Sleep(Timeout.Infinite);
 });
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -16,9 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddApplicationServices();
-
 
 var app = builder.Build();
 
@@ -42,6 +40,12 @@ app.MapSingleChoiceEndpoints();
 app.MapMultipleChoiceEndpoints();
 app.MapTextBasedEndpoints();
 app.MapQuestionsAndAnswersEndpoints();
+
+
+app.UseHangfireDashboard();
+app.MapHangfireDashboard("/hangfire");
+RecurringJob.AddOrUpdate(() => Console.WriteLine("Hello from hangfire!"), "* * * * *");
+
 
 app.Run();
 
