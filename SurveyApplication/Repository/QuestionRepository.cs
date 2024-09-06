@@ -66,6 +66,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         var cacheKey = $"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}";
         var cachedData = await garnetClient.GetValue(cacheKey);
 
+
         if (!string.IsNullOrEmpty(cachedData))
         {
             return JsonSerializer.Deserialize<List<QuestionChoicesViewDto>>(cachedData);
@@ -73,7 +74,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
         int existingSurveyCount = await connection.ExecuteScalarAsync<int>(checkSurveyQuery, new { surveyId });
 
-        if (existingSurveyCount < 1) throw new Exception("No such survey was found");
+        if (existingSurveyCount < 1) throw new ArgumentException("No such survey was found");
 
         var choices = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsWithChoicesQuery, new { surveyId });
 

@@ -84,7 +84,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(result));
 
-        return result ?? throw new Exception("Survey not found");
+        return result ?? throw new ArgumentException("Survey not found");
     }
 
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
@@ -103,6 +103,6 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(surveys));
 
-        return surveys ?? throw new Exception("Survey not found");
+        return surveys ?? throw new ArgumentException("Survey not found");
     }
 }

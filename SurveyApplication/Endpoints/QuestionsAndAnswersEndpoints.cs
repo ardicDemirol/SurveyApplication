@@ -10,8 +10,7 @@ public static class QuestionsAndAnswersEndpoints
     {
         builder.MapGet("/QuestionsAndAnswers/GetAllSurveyQuestionsAndAnswers/Survey{id}", async (IQuestionsAndAnswersRepository repository, IMediator mediator, int id) =>
         {
-            var response = await mediator.Send(new GetQuestionsAndAnswersQueryRequest(id));
-            return response;
+            return await mediator.Send(new GetQuestionsAndAnswersQueryRequest(id));
         });
     }
 }

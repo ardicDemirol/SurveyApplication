@@ -50,6 +50,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
 
     #endregion
+
     public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
     {
         using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
@@ -80,7 +81,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
                 surveyId = answer.Survey_Id
             });
 
-        if (existingQuestionCount < 1) throw new Exception("No such question was found");
+        if (existingQuestionCount < 1) throw new ArgumentException("No such question was found");
 
         var validChoices = connection.Query(getChoicesQuery, new { questionId = answer.Question_Id })
                                  .SelectMany(row => new List<string> { row.first_choice, row.second_choice })
@@ -88,7 +89,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
         string userAnswer = answer.Answer;
 
-        if (!validChoices.Contains(userAnswer)) throw new Exception("Answer not found in the choices");
+        if (!validChoices.Contains(userAnswer)) throw new ArgumentException("Answer not found in the choices");
 
         int existingCount = await connection.ExecuteScalarAsync<int>(checkQuery,
             new
@@ -97,7 +98,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
                 surveyId = answer.Survey_Id
             });
 
-        if (existingCount > 0) throw new Exception("You replied this question before");
+        if (existingCount > 0) throw new ArgumentException("You replied this question before");
 
         var parameters = new
         {

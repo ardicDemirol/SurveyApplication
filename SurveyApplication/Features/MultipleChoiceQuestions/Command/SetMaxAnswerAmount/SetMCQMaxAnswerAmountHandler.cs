@@ -12,9 +12,7 @@ public class SetMCQMaxAnswerAmountHandler(IMultipleChoiceRepository multipleChoi
     {
         var question = MultipleChoiceDto.Create(request.MaxChoiceAmount, request.QuestionID);
 
-        int result = await _multipleChoiceRepository.SetMaxAnswerAmount(question);
-
-        return result;
+        return await _multipleChoiceRepository.SetMaxAnswerAmount(question);
     }
 }
 

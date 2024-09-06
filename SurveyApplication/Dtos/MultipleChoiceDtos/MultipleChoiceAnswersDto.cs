@@ -14,8 +14,6 @@ public sealed record MultipleChoiceAnswersDto
 
     public static MultipleChoiceAnswersDto Create(string answer, int questionId)
     {
-        if (string.IsNullOrWhiteSpace(answer)) throw new ArgumentException("Answer cannot be empty.");
-
         return new MultipleChoiceAnswersDto(answer, questionId);
     }
 }

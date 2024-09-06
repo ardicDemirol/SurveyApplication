@@ -16,8 +16,6 @@ public sealed record SingleChoiceAnswerDto
 
     public static SingleChoiceAnswerDto Create(string answer, int questionId, int surveyId)
     {
-        if (string.IsNullOrWhiteSpace(answer)) throw new ArgumentException("Answer cannot be empty.");
-
         return new SingleChoiceAnswerDto(answer, questionId, surveyId);
     }
 }

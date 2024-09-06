@@ -14,10 +14,6 @@ public sealed record MultipleOtherChoicesDto
 
     public static MultipleOtherChoicesDto Create(string choice, int multipleChoiceQuestionId)
     {
-        if (string.IsNullOrWhiteSpace(choice)) throw new ArgumentException("Choice cannot be empty.");
-
-        if (multipleChoiceQuestionId <= 0) throw new ArgumentException("Multiple Choice Question ID must be greater than zero.");
-
         return new MultipleOtherChoicesDto(choice, multipleChoiceQuestionId);
     }
 }

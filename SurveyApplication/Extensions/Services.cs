@@ -39,5 +39,7 @@ public static class Services
 
         services.AddScoped<IGarnetClient, MyGarnetClient>();
 
+
+
     }
 }

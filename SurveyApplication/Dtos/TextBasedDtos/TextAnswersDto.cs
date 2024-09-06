@@ -13,10 +13,6 @@ public sealed record TextAnswersDto
 
     public static TextAnswersDto Create(string answer, int questionId)
     {
-        if (string.IsNullOrWhiteSpace(answer)) throw new ArgumentException("Answer cannot be empty.");
-
-        if (questionId <= 0) throw new ArgumentException("Question ID must be greater than zero.");
-
         return new TextAnswersDto(answer, questionId);
     }
 }

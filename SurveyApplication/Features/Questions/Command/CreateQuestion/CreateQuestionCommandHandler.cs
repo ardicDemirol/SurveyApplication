@@ -12,7 +12,5 @@ public class CreateQuestionCommandHandler(IQuestionRepository questionRepository
         var newQuestion = QuestionDto.Create(request.Question_Text, request.Question_Answer_Required, request.Survey_Id, request.Question_Type_Id);
 
         await _questionRepository.CreateQuestion(newQuestion);
-
-        //return Results.Ok("Question created successfuly");
     }
 }

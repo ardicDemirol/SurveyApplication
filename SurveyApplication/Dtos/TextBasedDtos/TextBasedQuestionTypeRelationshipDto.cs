@@ -14,10 +14,6 @@ public sealed record TextBasedQuestionTypeRelationshipDto
 
     public static TextBasedQuestionTypeRelationshipDto Create(int textTypeId, int questionId)
     {
-        if (textTypeId <= 0) throw new ArgumentException("Text Type ID must be greater than zero.");
-
-        if (questionId <= 0) throw new ArgumentException("Question ID must be greater than zero.");
-
         return new TextBasedQuestionTypeRelationshipDto(textTypeId, questionId);
     }
 }

@@ -16,11 +16,6 @@ public sealed record SingleChoiceQuestionDto
 
     public static SingleChoiceQuestionDto Create(string firstChoice, string secondChoice, int questionId)
     {
-        if (string.IsNullOrWhiteSpace(firstChoice) || string.IsNullOrWhiteSpace(secondChoice))
-        {
-            throw new ArgumentException("Choice values cannot be empty.");
-        }
-
         return new SingleChoiceQuestionDto(firstChoice, secondChoice, questionId);
     }
 }

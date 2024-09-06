@@ -16,6 +16,7 @@ public static class SingleChoiceEndpoints
             AddSCQChoicesCommandRequest choice) =>
         {
             await mediator.Send(choice);
+            return Results.Ok(choice);
         }).AddEndpointFilter<ValidatorFilter<AddSCQChoicesCommandRequest>>();
 
 
@@ -25,8 +26,7 @@ public static class SingleChoiceEndpoints
             SaveSCACommandRequest answer) =>
         {
             await mediator.Send(answer);
-
-            return Results.Created($"/singlechoice/answer", answer);
+            return Results.Ok(answer);
         }).AddEndpointFilter<ValidatorFilter<SaveSCACommandRequest>>();
 
     }

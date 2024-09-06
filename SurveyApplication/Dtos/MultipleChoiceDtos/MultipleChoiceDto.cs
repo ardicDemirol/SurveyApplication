@@ -14,8 +14,6 @@ public sealed record MultipleChoiceDto
 
     public static MultipleChoiceDto Create(int maxChoiceAmount, int questionId)
     {
-        if (maxChoiceAmount <= 0) throw new ArgumentException("Max choice amount must be greater than zero.");
-
         return new MultipleChoiceDto(maxChoiceAmount, questionId);
     }
 }

@@ -129,7 +129,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
 
         bool exists = connection.ExecuteScalar<bool>(createChoicesViewQuery, parameters);
 
-        if (!exists) throw new Exception("Choice does not exist");
+        if (!exists) throw new ArgumentException("Choice does not exist");
 
         int matchedAnswerCount = await connection.ExecuteScalarAsync<int>(checkAnswerQuery, new { questionId = answerModel.Question_Id });
         int maxAnswerAmount = await connection.ExecuteScalarAsync<int>(checkMaxAnswerQuery, new { questionId = answerModel.Question_Id });

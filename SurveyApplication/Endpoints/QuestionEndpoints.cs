@@ -16,8 +16,7 @@ public static class QuestionEndpoints
             IMediator mediator,
             int id) =>
         {
-            var response = await mediator.Send(new GetAllSurveyQuestionsQueryRequest(id));
-            return response;
+            return await mediator.Send(new GetAllSurveyQuestionsQueryRequest(id));
         });
 
 
@@ -28,6 +27,7 @@ public static class QuestionEndpoints
             CreateQuestionCommandRequest createQuestionModel) =>
         {
             await mediator.Send(createQuestionModel);
+            return Results.Created($"/question/", createQuestionModel.Question_Text);
         }).AddEndpointFilter<ValidatorFilter<CreateQuestionCommandRequest>>();
 
 

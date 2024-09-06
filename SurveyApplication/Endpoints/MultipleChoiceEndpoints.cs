@@ -17,7 +17,7 @@ public static class MultipleChoiceEndpoints
             SetMCQMaxAnswerAmountRequest choice) =>
         {
             var response = await mediator.Send(choice);
-            return Results.Ok("Choice Id " + response);
+            return Results.Ok($"Choice Id {response}");
         }).AddEndpointFilter<ValidatorFilter<SetMCQMaxAnswerAmountRequest>>();
 
 
@@ -27,6 +27,7 @@ public static class MultipleChoiceEndpoints
             AddMCQChoiceCommandRequest choice) =>
         {
             await mediator.Send(choice);
+            return Results.Ok(choice);
         }).AddEndpointFilter<ValidatorFilter<AddMCQChoiceCommandRequest>>();
 
 
@@ -36,6 +37,7 @@ public static class MultipleChoiceEndpoints
             SaveMCACommandRequest answer) =>
         {
             await mediator.Send(answer);
+            return Results.Ok(answer);
         }).AddEndpointFilter<ValidatorFilter<SaveMCACommandRequest>>();
     }
 }
