@@ -17,8 +17,31 @@ using System.Reflection;
 namespace SurveyApplication.Extensions;
 public static class Services
 {
+    private static readonly string connectionString = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
+    private static readonly string[] commandLineArgs = ["--config-import-path", "garnet.conf"];
+
     public static void AddApplicationServices(this IServiceCollection services)
     {
+        Task.Run(() =>
+        {
+            using var server = new Garnet.GarnetServer(commandLineArgs);
+            server.Start();
+            Thread.Sleep(Timeout.Infinite);
+        });
+
+
+        var assembly = Assembly.GetExecutingAssembly();
+        services.AddMediatR(config => config.RegisterServicesFromAssemblies(assembly));
+
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(options =>
+            {
+                options.UseNpgsqlConnection(connectionString);
+            }));
+
         services.AddScoped<ISurveyRepository, SurveyRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
@@ -26,10 +49,7 @@ public static class Services
         services.AddScoped<ITextBasedRepository, TextBasedRepository>();
         services.AddScoped<IQuestionsAndAnswersRepository, QuestionsAndAnswersRepository>();
         services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
-
-
-        var assembly = Assembly.GetExecutingAssembly();
-        services.AddMediatR(config => config.RegisterServicesFromAssemblies(assembly));
+        services.AddScoped<IGarnetClient, MyGarnetClient>();
 
         services.AddValidatorsFromAssemblyContaining<CreateSurveyValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateQuestionValidator>();
@@ -41,23 +61,9 @@ public static class Services
         services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSetRelationValidator>();
         services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSaveAnswerValidator>();
 
-        services.AddScoped<IGarnetClient, MyGarnetClient>();
-
-
-        string connectionString = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
-        services.AddHangfire(config => config
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            .UseSimpleAssemblyNameTypeSerializer()
-            .UseRecommendedSerializerSettings()
-            .UsePostgreSqlStorage(options =>
-            {
-                options.UseNpgsqlConnection(connectionString);
-            }));
-
-        services.AddHangfireServer();
         services.AddTransient<IEmailService, EmailService>();
 
-
+        services.AddHangfireServer();
 
     }
 }

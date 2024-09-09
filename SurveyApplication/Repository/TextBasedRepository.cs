@@ -38,7 +38,7 @@ public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionP
 
     public async Task SetRelation(TextBasedQuestionTypeRelationshipDto relation)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var parameters = new
         {
@@ -51,7 +51,7 @@ public class TextBasedRepository(IDatabaseConnectionProvider databaseConnectionP
 
     public async Task SaveAnswer(TextAnswersDto answer)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
 
         int textTypeId = await connection.ExecuteScalarAsync<int>(getTextTypeCommand, new { questionId = answer.Question_Id });

@@ -7,9 +7,9 @@ public class SetMaxChoiceAmountValidator : AbstractValidator<SetMCQMaxAnswerAmou
     public SetMaxChoiceAmountValidator()
     {
         RuleFor(request => request.QuestionID)
-            .GreaterThan(0).WithMessage("Question Id must be greater than 0.");
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
 
         RuleFor(request => request.MaxChoiceAmount)
-            .GreaterThan(0).WithMessage("Max choice amount must be greater than 0.");
+            .GreaterThan(0).WithMessage("{PropertyName} must be at least {ComparisonValue} character long.");
     }
 }

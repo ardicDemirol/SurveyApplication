@@ -3,7 +3,7 @@ using SurveyApplication.Features.Surveys.Command.CreateSurvey;
 using SurveyApplication.Features.Surveys.Queries.GetAllSurveys;
 using SurveyApplication.Features.Surveys.Queries.GetSurveyById;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Validation;
+using SurveyApplication.Validations;
 
 namespace SurveyApplication.Endpoints;
 

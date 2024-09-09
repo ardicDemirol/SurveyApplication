@@ -53,7 +53,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
     public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { questionId = singleChoice.Question_Id });
 
@@ -72,7 +72,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
     public async Task SaveAnswer(SingleChoiceAnswerDto answer)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestionQuery,
             new

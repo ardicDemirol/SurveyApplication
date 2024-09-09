@@ -7,21 +7,21 @@ public class CreateQuestionValidator : AbstractValidator<CreateQuestionCommandRe
     public CreateQuestionValidator()
     {
         RuleFor(request => request.Question_Text)
-            .NotEmpty().WithMessage("Question text must not be empty.")
-            .NotNull().WithMessage("Question text must not be null")
-            .MinimumLength(10).WithMessage("Question text must be at least 10 character long.")
-            .MaximumLength(150).WithMessage("Question text cannot exceed 150 characters.");
+            .NotEmpty().WithMessage("{PropertyName} must not be empty.")
+            .NotNull().WithMessage("{PropertyName} must not be null")
+            .MinimumLength(10).WithMessage("{PropertyName} must be at least {MinLength} character long.")
+            .MaximumLength(150).WithMessage("{PropertyName} cannot exceed {MaxLength} characters.");
 
         RuleFor(request => request.Question_Answer_Required)
-            .NotEmpty().WithMessage("Question answer required must not be empty.");
+            .NotEmpty().WithMessage("{PropertyName} required must not be empty.");
 
 
         RuleFor(request => request.Survey_Id)
-            .GreaterThan(0).WithMessage("Survey Id must be greater than 0.");
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
 
         RuleFor(request => request.Question_Type_Id)
-            .GreaterThan(0).WithMessage("Question Type Id must be greater than 0.")
-            .LessThanOrEqualTo(4).WithMessage("Question Type Id must be less than or equal to 4.");
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.")
+            .LessThanOrEqualTo(4).WithMessage("{PropertyName} must be less than or equal to {ComparisonValue}.");
 
     }
 }

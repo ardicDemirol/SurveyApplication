@@ -8,12 +8,12 @@ public class SaveAnswerMCQValidator : AbstractValidator<SaveMCACommandRequest>
     public SaveAnswerMCQValidator()
     {
         RuleFor(request => request.Answer)
-            .NotEmpty().WithMessage("Answer must not be empty.")
-            .MinimumLength(1).WithMessage("Answer must be at least 1 character long.")
-            .MaximumLength(30).WithMessage("Answer cannot exceed 30 characters.");
+            .NotEmpty().WithMessage("{PropertyName} must not be empty.")
+            .MinimumLength(1).WithMessage("{PropertyName} must be at least {MinLength} character long.")
+            .MaximumLength(30).WithMessage("{PropertyName} cannot exceed {MaxLength} characters.");
 
         RuleFor(request => request.QuestionId)
-            .GreaterThan(0).WithMessage("Question_Id must be greater than 0.");
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
 
     }
 }

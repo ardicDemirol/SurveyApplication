@@ -6,14 +6,10 @@ namespace SurveyApplication.Services.Email;
 
 public class EmailService : IEmailService
 {
-    private static readonly string fromMail = "";
+    private static readonly string fromMail = "laylaylom62jk@gmail.com";
     private static readonly string fromPassword = "rhrqxtrltdbjzjhw";
+    private static readonly string hostSmtp = "smtp.gmail.com";
     private static readonly int smtpPort = 587;
-
-    public void SendSurveyCreatedEmail(string email, string surveyTitle)
-    {
-        Console.WriteLine($"Sending email to {email} for survey {surveyTitle}");
-    }
 
     public async Task SendEmailAsync(string to, string subject, string body)
     {
@@ -28,7 +24,7 @@ public class EmailService : IEmailService
             };
             message.To.Add(new MailAddress(to));
 
-            using var smtpClient = new SmtpClient("smtp.gmail.com", smtpPort)
+            using var smtpClient = new SmtpClient(hostSmtp, smtpPort)
             {
                 EnableSsl = true,
                 Credentials = new NetworkCredential(fromMail, fromPassword)
@@ -38,8 +34,7 @@ public class EmailService : IEmailService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred while sending the email: {ex.Message}");
-            throw;
+            throw new Exception(ex.Message);
         }
     }
 

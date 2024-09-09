@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace SurveyApplication.Validation;
+namespace SurveyApplication.Validations;
 public class ValidatorFilter<T> : IEndpointFilter
 {
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext ctx, EndpointFilterDelegate next)

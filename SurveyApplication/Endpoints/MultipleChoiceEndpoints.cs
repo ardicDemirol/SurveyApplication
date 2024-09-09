@@ -3,7 +3,7 @@ using SurveyApplication.Features.MultipleChoiceQuestions.Command.AddChoices;
 using SurveyApplication.Features.MultipleChoiceQuestions.Command.SaveAnswers;
 using SurveyApplication.Features.MultipleChoiceQuestions.Command.SetMaxAnswerAmount;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Validation;
+using SurveyApplication.Validations;
 
 namespace SurveyApplication.Endpoints;
 

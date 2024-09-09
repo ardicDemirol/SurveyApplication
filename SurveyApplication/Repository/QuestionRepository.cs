@@ -40,7 +40,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
     public async Task CreateQuestion(QuestionDto question)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         int newQuestionOrderId = await connection.GetNextIdAsync("question", "question_order", "survey_id", question.Survey_Id) + 1;
 
@@ -61,7 +61,7 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
     public async Task<IEnumerable<QuestionChoicesViewDto>> GetAllSurveyQuestions<T>(int surveyId)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var cacheKey = $"{CacheKeys.SurveyQuestionsCacheKey}{surveyId}";
         var cachedData = await garnetClient.GetValue(cacheKey);

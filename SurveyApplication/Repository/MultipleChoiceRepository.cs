@@ -79,7 +79,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
 
     public async Task<int> SetMaxAnswerAmount(MultipleChoiceDto question)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         int matchedQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestionQuery, new { questionId = question.Question_Id });
         int matchedAnswerCount = await connection.ExecuteScalarAsync<int>(checkMatchedAnswerQuery, new { questionId = question.Question_Id });
@@ -99,7 +99,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
 
     public async Task AddChoice(MultipleOtherChoicesDto newChoice)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var parameters = new
         {
@@ -119,7 +119,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
 
     public async Task SaveAnswer(MultipleChoiceAnswersDto answerModel)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var parameters = new
         {

@@ -2,7 +2,7 @@
 using SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 using SurveyApplication.Features.SingleChoiceQuestions.Command.SavesAnswer;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Validation;
+using SurveyApplication.Validations;
 
 namespace SurveyApplication.Endpoints;
 

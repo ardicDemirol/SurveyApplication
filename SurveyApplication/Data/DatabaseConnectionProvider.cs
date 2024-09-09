@@ -7,11 +7,10 @@ public class DatabaseConnectionProvider(IConfiguration configuration) : IDatabas
 {
     private readonly IConfiguration _configuration = configuration;
 
-    public async Task<NpgsqlConnection> GetOpenConnectionAsync()
+    public async Task<NpgsqlConnection> ConnectAndOpenConnectionAsync()
     {
         var connection = new NpgsqlConnection(_configuration.GetConnectionString("PostgresConnection"));
         await connection.OpenAsync();
         return connection;
     }
-
 }

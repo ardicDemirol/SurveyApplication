@@ -2,13 +2,6 @@ using Hangfire;
 using SurveyApplication.Endpoints;
 using SurveyApplication.Extensions;
 
-Task.Run(() =>
-{
-    using var server = new Garnet.GarnetServer(new string[] { "--config-import-path", "garnet.conf" });
-    server.Start();
-    Thread.Sleep(Timeout.Infinite);
-});
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -44,7 +37,6 @@ app.MapQuestionsAndAnswersEndpoints();
 
 app.UseHangfireDashboard();
 app.MapHangfireDashboard("/hangfire");
-RecurringJob.AddOrUpdate(() => Console.WriteLine("Hello from hangfire!"), "* * * * *");
 
 
 app.Run();

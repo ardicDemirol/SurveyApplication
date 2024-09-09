@@ -51,7 +51,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
     #endregion
     public async Task CreateSurvey<T>(SurveyDto survey)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         int? companyId = await connection.ExecuteScalarAsync<int?>(checkCompanyExistsQuery, new { companyName = survey.Company_Name });
 
@@ -72,7 +72,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
         var jobId = BackgroundJob.Enqueue<IEmailService>(x => x.SendEmailAsync(
                     receiverEmail,
-                    "New Survey Added to Su Bilgi Survey System",
+                    "New Survey Added",
                     $"New Survey {survey.Survey_Title} added to Su Bilgi Survey System"
                     ));
 
@@ -81,7 +81,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
     public async Task<T> GetSurveyById<T>(int surveyId)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var cacheKey = $"{CacheKeys.SurveyCacheKey}{surveyId}";
         var cachedData = await garnetClient.GetValue(cacheKey);
@@ -101,7 +101,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
 
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var cacheKey = CacheKeys.AllSurveysCacheKey;
         var cachedData = await garnetClient.GetValue(cacheKey);

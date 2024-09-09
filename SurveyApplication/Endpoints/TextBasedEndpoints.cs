@@ -2,7 +2,7 @@
 using SurveyApplication.Features.TextBasedQuestion.Command.SaveAnswer;
 using SurveyApplication.Features.TextBasedQuestion.Command.SetRelation;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Validation;
+using SurveyApplication.Validations;
 
 namespace SurveyApplication.Endpoints;
 

@@ -22,7 +22,7 @@ public class QuestionsAndAnswersRepository(IDatabaseConnectionProvider databaseC
 
     public async Task<IEnumerable<QuestionsAndAnswersViewDto>> GetAllQuestionsAndAnswers<T>(int surveyId)
     {
-        using var connection = await _databaseConnectionProvider.GetOpenConnectionAsync();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
         var cacheKey = $"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{surveyId}";
         var cachedData = await garnetClient.GetValue(cacheKey);

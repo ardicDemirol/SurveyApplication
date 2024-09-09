@@ -2,7 +2,7 @@
 using SurveyApplication.Features.Questions.Command.CreateQuestion;
 using SurveyApplication.Features.Questions.Queries.GetAllSurveyQuestions;
 using SurveyApplication.Interfaces;
-using SurveyApplication.Validation;
+using SurveyApplication.Validations;
 
 namespace SurveyApplication.Endpoints;
 
