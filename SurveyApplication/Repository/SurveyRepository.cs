@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace SurveyApplication.Repository;
 
-public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISurveyRepository
+public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProvider, IGarnetClient garnetClient) : ISurveyRepository
 {
     #region Fields
 
@@ -19,18 +19,18 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
     private static readonly string checkCompanyExistsQuery = """
                                     SELECT company_id 
                                     FROM company 
-                                    WHERE company_name = @companyName
+                                    WHERE company_name = :companyName
                                     """;
 
     private static readonly string insertCompanyCommand = """
-                               INSERT INTO company (company_name)
-                               VALUES (@companyName)
+                               INSERT INTO company company_name
+                               VALUES :companyName
                                RETURNING company_id
                                """;
 
     private static readonly string insertSurveyCommand = """
                               INSERT INTO surveys (survey_title, start_time, finish_time, completed_count, company_name)
-                              VALUES (@name, @startTime, @finishTime, 0, @companyName)
+                              VALUES (:name, :startTime, :finishTime, 0, :companyName)
                               """;
 
     private static readonly string getSurveyByIdQuery = """
@@ -40,7 +40,7 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
                                 finish_time AS FinishTime,
                                 completed_count AS CompletedCount
                              FROM surveys
-                             WHERE survey_id = @surveyId
+                             WHERE survey_id = :surveyId
                              """;
 
     private static readonly string getAllSurveyCommand = """
@@ -48,8 +48,14 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
                             FROM surveys
                             """;
 
+    private static readonly string existByNameQuery = """
+                                  SELECT COUNT(1)
+                                  FROM surveys
+                                  WHERE survey_title = :surveyTitle
+                                  """;
+
     #endregion
-    public async Task CreateSurvey<T>(SurveyDto survey)
+    public async Task CreateSurvey(SurveyDto survey)
     {
         using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
@@ -116,5 +122,14 @@ public class SurveyRepository(IDatabaseConnectionProvider databaseConnectionProv
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(surveys));
 
         return surveys ?? throw new ArgumentException("Survey not found");
+    }
+
+    public async Task<bool> Exist(string surveyTitle)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        var parameters = new { surveyTitle };
+
+        return await connection.ExecuteScalarAsync<int>(existByNameQuery, parameters) == 1;
     }
 }

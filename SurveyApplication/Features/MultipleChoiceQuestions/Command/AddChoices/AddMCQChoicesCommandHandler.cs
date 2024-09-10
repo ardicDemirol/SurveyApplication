@@ -1,16 +1,27 @@
 ﻿using MediatR;
-using SurveyApplication.Dtos.MultipleChoiceDtos;
+using Microsoft.AspNetCore.Mvc;
+using SurveyApplication.Entities.MCQ;
 using SurveyApplication.Interfaces;
+using SurveyApplication.Mappers;
+using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 
 namespace SurveyApplication.Features.MultipleChoiceQuestions.Command.AddChoices;
 
-public class AddMCQChoicesCommandHandler(IMultipleChoiceRepository multipleChoiceRepository) : IRequestHandler<AddMCQChoiceCommandRequest>
+public class AddMCQChoicesCommandHandler(
+    IMultipleChoiceRepository multipleChoiceRepository,
+    MCQAddChoiceValidatorApp validator) : IRequestHandler<AddMCQChoiceCommandRequest, IActionResult>
 {
     private readonly IMultipleChoiceRepository _multipleChoiceRepository = multipleChoiceRepository;
-    public async Task Handle(AddMCQChoiceCommandRequest request, CancellationToken cancellationToken)
-    {
-        var newMultipleChoiceQuestionChoices = MultipleOtherChoicesDto.Create(request.Choice, request.MultipleChoiceQuestionId);
+    private readonly MCQAddChoiceValidatorApp _validator = validator;
 
-        await _multipleChoiceRepository.AddChoice(newMultipleChoiceQuestionChoices);
+    public async Task<IActionResult> Handle(AddMCQChoiceCommandRequest request, CancellationToken cancellationToken)
+    {
+        await _validator.ChoiceExist(request);
+
+        var newMultipleChoiceQuestionChoices = MCQSaveChoices.Create(0, request.Choice, request.MultipleChoiceQuestionId);
+
+        await _multipleChoiceRepository.AddChoice(newMultipleChoiceQuestionChoices.ToDto());
+
+        return new OkObjectResult("Choice Added Successfully");
     }
 }

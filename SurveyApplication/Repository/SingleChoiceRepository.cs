@@ -36,7 +36,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
                                  WHERE question_id = @questionId
                                  """;
 
-    private static readonly string checkQuery = """
+    private static readonly string checkAnswerQuery = """
                             SELECT COUNT(1)
                             FROM single_choice_answers 
                             WHERE question_id = @questionId 
@@ -51,7 +51,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
     #endregion
 
-    public async Task AddChoice(SingleChoiceQuestionDto singleChoice)
+    public async Task AddChoice(SCQuestionDto singleChoice)
     {
         using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
@@ -70,7 +70,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         await connection.ExecuteAsync(insertChoiceCommand, parameters);
     }
 
-    public async Task SaveAnswer(SingleChoiceAnswerDto answer)
+    public async Task SaveAnswer(SCAnswerDto answer)
     {
         using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
@@ -91,7 +91,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
         if (!validChoices.Contains(userAnswer)) throw new ArgumentException("Answer not found in the choices");
 
-        int existingCount = await connection.ExecuteScalarAsync<int>(checkQuery,
+        int existingCount = await connection.ExecuteScalarAsync<int>(checkAnswerQuery,
             new
             {
                 questionId = answer.Question_Id,
@@ -111,5 +111,10 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         await _garnetClient.DeleteValue($"{CacheKeys.AllSurveyQuestionsAndAnswersCacheKey}{answer.Survey_Id}");
 
         await connection.ExecuteAsync(insertAnswerCommand, parameters);
+    }
+
+    public Task<bool> QuestionExist(int questionId, string firstChoice, string secondChoice)
+    {
+        throw new NotImplementedException();
     }
 }

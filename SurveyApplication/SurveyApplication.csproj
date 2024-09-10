@@ -25,4 +25,9 @@
     <ProjectReference Include="..\SurveyApplication.Services\SurveyApplication.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validations\ApplicationLayer\SingleChoiceValidations\" />
+    <Folder Include="Validations\ApplicationLayer\TextBasedValidations\" />
+  </ItemGroup>
+
 </Project>

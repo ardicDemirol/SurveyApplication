@@ -6,7 +6,7 @@ namespace SurveyApplication.Services.Email;
 
 public class EmailService : IEmailService
 {
-    private static readonly string fromMail = "laylaylom62jk@gmail.com";
+    private static readonly string fromMail = "";
     private static readonly string fromPassword = "rhrqxtrltdbjzjhw";
     private static readonly string hostSmtp = "smtp.gmail.com";
     private static readonly int smtpPort = 587;

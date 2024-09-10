@@ -10,7 +10,7 @@ public class AddSCQChoicesCommandHandler(ISingleChoiceRepository singleChoiceRep
 
     public async Task Handle(AddSCQChoicesCommandRequest request, CancellationToken cancellationToken)
     {
-        var newSingleChoiceQuestionChoices = SingleChoiceQuestionDto.Create(request.First_Choice, request.Second_Choice, request.Question_Id);
+        var newSingleChoiceQuestionChoices = SCQuestionDto.Create(request.First_Choice, request.Second_Choice, request.Question_Id);
 
         await _singleChoiceRepository.AddChoice(newSingleChoiceQuestionChoices);
     }

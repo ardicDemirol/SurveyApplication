@@ -10,7 +10,7 @@ public class SaveSCACommandHandler(ISingleChoiceRepository singleChoiceRepositor
 
     public async Task Handle(SaveSCACommandRequest request, CancellationToken cancellationToken)
     {
-        var newSingleChoiceAnswer = SingleChoiceAnswerDto.Create(request.Answer, request.Question_Id, request.Survey_Id);
+        var newSingleChoiceAnswer = SCAnswerDto.Create(request.Answer, request.Question_Id, request.Survey_Id);
         await _singleChoiceRepository.SaveAnswer(newSingleChoiceAnswer);
     }
 }

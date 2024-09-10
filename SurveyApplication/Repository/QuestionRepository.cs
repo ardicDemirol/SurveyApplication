@@ -36,6 +36,12 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
                                               AND question_type_id = 4
                                               """;
 
+    private static readonly string existByNameQuery = """
+                                  SELECT COUNT(1)
+                                  FROM question
+                                  WHERE question_text = @questionText
+                                  AND survey_id = @surveyId
+                                  """;
     #endregion
 
     public async Task CreateQuestion(QuestionDto question)
@@ -87,6 +93,16 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(allChoices));
 
         return allChoices;
+
+    }
+
+    public async Task<bool> QuestionExist(int surveyId, string questionText)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        var parameters = new { questionText, surveyId };
+
+        return await connection.ExecuteScalarAsync<int>(existByNameQuery, parameters) == 1;
 
     }
 }

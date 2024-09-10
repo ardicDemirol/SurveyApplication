@@ -7,11 +7,14 @@ using SurveyApplication.Interfaces;
 using SurveyApplication.Repository;
 using SurveyApplication.Services.Email;
 using SurveyApplication.Services.Email.Interfaces;
-using SurveyApplication.Validations.MultipleChoiceValidations;
-using SurveyApplication.Validations.QuestionValidations;
-using SurveyApplication.Validations.SingleChoiceValidations;
-using SurveyApplication.Validations.SurveyValidations;
-using SurveyApplication.Validations.TextBasedValidations;
+using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
+using SurveyApplication.Validations.ApplicationLayer.QuestionValidations;
+using SurveyApplication.Validations.ApplicationLayer.SurveyValidations;
+using SurveyApplication.Validations.PresantationLayer.MultipleChoiceValidations;
+using SurveyApplication.Validations.PresantationLayer.QuestionValidations;
+using SurveyApplication.Validations.PresantationLayer.SingleChoiceValidations;
+using SurveyApplication.Validations.PresantationLayer.SurveyValidations;
+using SurveyApplication.Validations.PresantationLayer.TextBasedValidations;
 using System.Reflection;
 
 namespace SurveyApplication.Extensions;
@@ -51,15 +54,23 @@ public static class Services
         services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
         services.AddScoped<IGarnetClient, MyGarnetClient>();
 
-        services.AddValidatorsFromAssemblyContaining<CreateSurveyValidator>();
-        services.AddValidatorsFromAssemblyContaining<CreateQuestionValidator>();
-        services.AddValidatorsFromAssemblyContaining<AddSCQuestionValidator>();
-        services.AddValidatorsFromAssemblyContaining<SaveSCAnswerValidator>();
-        services.AddValidatorsFromAssemblyContaining<SetMaxChoiceAmountValidator>();
-        services.AddValidatorsFromAssemblyContaining<AddChoicesMCQValidator>();
-        services.AddValidatorsFromAssemblyContaining<SaveAnswerMCQValidator>();
-        services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSetRelationValidator>();
-        services.AddValidatorsFromAssemblyContaining<TextBasedQuestionsSaveAnswerValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateSurveyValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<CreateQuestionValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<SCAddQuestionValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<SCSaveAnswerValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<MCQSetMaxChoiceAmountValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<MCQAddChoicesValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<MCQSaveAnswerValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<TBQSetRelationValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<TBQSaveAnswerValidatorPrs>();
+
+        //
+        services.AddScoped<CreateSurveyValidatorApp>();
+        services.AddScoped<CreateQuestionValidatorApp>();
+        services.AddScoped<MCQSetMaxAnswerAmountValidatiorApp>();
+        services.AddScoped<MCQAddChoiceValidatorApp>();
+        services.AddScoped<MCQSaveAnswerValidatorApp>();
+        //
 
         services.AddTransient<IEmailService, EmailService>();
 

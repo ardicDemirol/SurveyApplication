@@ -3,6 +3,8 @@
 namespace SurveyApplication.Interfaces;
 public interface ISingleChoiceRepository
 {
-    Task AddChoice(SingleChoiceQuestionDto choice);
-    Task SaveAnswer(SingleChoiceAnswerDto answer);
+    Task AddChoice(SCQuestionDto choice);
+    Task SaveAnswer(SCAnswerDto answer);
+
+    Task<bool> QuestionExist(int questionId, string firstChoice, string secondChoice);
 }

@@ -36,6 +36,7 @@ public static class SurveyEndpoints
             IMediator mediator,
             CreateSurveyCommandRequest createSurveyModel) =>
         {
+
             await mediator.Send(createSurveyModel);
             return Results.Created($"/survey/", createSurveyModel.Survey_Title);
         }).AddEndpointFilter<ValidatorFilter<CreateSurveyCommandRequest>>();

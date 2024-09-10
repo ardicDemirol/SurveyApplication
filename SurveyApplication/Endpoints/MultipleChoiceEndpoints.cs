@@ -34,10 +34,10 @@ public static class MultipleChoiceEndpoints
         builder.MapPost("/MultipleChoice/SaveAnswer", async (
             IMultipleChoiceRepository repository,
             IMediator mediator,
-            SaveMCACommandRequest answer) =>
+            MCQSaveAnswerCommandRequest answer) =>
         {
             await mediator.Send(answer);
             return Results.Ok(answer);
-        }).AddEndpointFilter<ValidatorFilter<SaveMCACommandRequest>>();
+        }).AddEndpointFilter<ValidatorFilter<MCQSaveAnswerCommandRequest>>();
     }
 }
