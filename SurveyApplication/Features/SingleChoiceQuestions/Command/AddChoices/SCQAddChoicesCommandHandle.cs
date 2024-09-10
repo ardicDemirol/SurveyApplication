@@ -7,7 +7,7 @@ using SurveyApplication.Validations.ApplicationLayer.SingleChoiceValidations;
 
 namespace SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 
-public class SCQAddChoicesCommandHandler(ISingleChoiceRepository repository, SCQAddChoiceValidatorApp validator) : IRequestHandler<SCQAddChoicesCommandRequest, IActionResult>
+public class SCQAddChoicesCommandHandle(ISingleChoiceRepository repository, SCQAddChoiceValidatorApp validator) : IRequestHandler<SCQAddChoicesCommandRequest, IActionResult>
 {
     private readonly ISingleChoiceRepository _repository = repository;
     private readonly SCQAddChoiceValidatorApp _validator = validator;

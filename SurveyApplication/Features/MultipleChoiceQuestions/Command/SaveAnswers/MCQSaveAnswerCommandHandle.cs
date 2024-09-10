@@ -7,7 +7,7 @@ using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 
 namespace SurveyApplication.Features.MultipleChoiceQuestions.Command.SaveAnswers;
 
-public class MCQSaveAnswerCommandHandler(IMultipleChoiceRepository repository, MCQSaveAnswerValidatorApp validator) : IRequestHandler<MCQSaveAnswerCommandRequest, IActionResult>
+public class MCQSaveAnswerCommandHandle(IMultipleChoiceRepository repository, MCQSaveAnswerValidatorApp validator) : IRequestHandler<MCQSaveAnswerCommandRequest, IActionResult>
 {
     private readonly IMultipleChoiceRepository _repository = repository;
     private readonly MCQSaveAnswerValidatorApp _validator = validator;

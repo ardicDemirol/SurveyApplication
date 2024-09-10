@@ -7,7 +7,7 @@ using SurveyApplication.Validations.ApplicationLayer.SurveyValidations;
 
 namespace SurveyApplication.Features.Surveys.Command.CreateSurvey;
 
-public sealed class CreateSurveyCommandHandler(
+public sealed class CreateSurveyCommandHandle(
     ISurveyRepository repository,
     CreateSurveyValidatorApp validator) : IRequestHandler<CreateSurveyCommandRequest, IActionResult>
 {

@@ -11,6 +11,7 @@ using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.QuestionValidations;
 using SurveyApplication.Validations.ApplicationLayer.SingleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.SurveyValidations;
+using SurveyApplication.Validations.ApplicationLayer.TextBasedValidations;
 using SurveyApplication.Validations.PresantationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.PresantationLayer.QuestionValidations;
 using SurveyApplication.Validations.PresantationLayer.SingleChoiceValidations;
@@ -73,6 +74,8 @@ public static class Services
         services.AddScoped<MCQSaveAnswerValidatorApp>();
         services.AddScoped<SCQAddChoiceValidatorApp>();
         services.AddScoped<SCQSaveAnswerValidatorApp>();
+        services.AddScoped<TBSaveAnswerValidatorApp>();
+        services.AddScoped<TBSetRelationValidatorApp>();
         //
 
         services.AddTransient<IEmailService, EmailService>();

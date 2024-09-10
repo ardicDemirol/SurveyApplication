@@ -1,19 +1,19 @@
 ﻿namespace SurveyApplication.Dtos.TextBasedDtos;
-public sealed record TextAnswersDto
+public sealed record TBQAnswersDto
 {
     public int Answer_Id { get; }
     public string Answer { get; }
     public int Question_Id { get; }
 
-    private TextAnswersDto(string answer, int questionId)
+    private TBQAnswersDto(string answer, int questionId)
     {
         Answer = answer;
         Question_Id = questionId;
     }
 
-    public static TextAnswersDto Create(string answer, int questionId)
+    public static TBQAnswersDto Create(string answer, int questionId)
     {
-        return new TextAnswersDto(answer, questionId);
+        return new TBQAnswersDto(answer, questionId);
     }
 }
 

@@ -2,7 +2,7 @@
 using SurveyApplication.Interfaces;
 
 namespace SurveyApplication.Features.QuestionsAndAnswers.Queries.GetQuestionsAndAnswers;
-public class GetQuestionsAndAnswersQueryHandler(IQuestionsAndAnswersRepository questionsAndAnswersRepository) : IRequestHandler<GetQuestionsAndAnswersQueryRequest, IList<GetQuestionsAndAnswersQueryResponse>>
+public class GetQuestionsAndAnswersQueryHandle(IQuestionsAndAnswersRepository questionsAndAnswersRepository) : IRequestHandler<GetQuestionsAndAnswersQueryRequest, IList<GetQuestionsAndAnswersQueryResponse>>
 {
     private readonly IQuestionsAndAnswersRepository _questionsAndAnswersRepository = questionsAndAnswersRepository;
     public async Task<IList<GetQuestionsAndAnswersQueryResponse>> Handle(GetQuestionsAndAnswersQueryRequest request, CancellationToken cancellationToken)

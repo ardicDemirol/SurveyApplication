@@ -6,7 +6,7 @@ using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 
 namespace SurveyApplication.Features.MultipleChoiceQuestions.Command.SetMaxAnswerAmount;
 
-public class SetMaxAnswerAmountHandler(
+public class SetMaxAnswerAmountHandle(
     IMultipleChoiceRepository repository,
     MCQSetMaxAnswerAmountValidatiorApp validator)
     : IRequestHandler<SetMCQMaxAnswerAmountRequest, IActionResult>

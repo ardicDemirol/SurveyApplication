@@ -13,24 +13,24 @@ public static class TextBasedEndpoints
         builder.MapPost("/TextBased/SetRelation", async (
             ITextBasedRepository repository,
             IMediator mediator,
-            SetRelationCommandRequest relation) =>
+            TBSetRelationCommandRequest relation) =>
         {
             await mediator.Send(relation);
 
             return Results.Created($"/TextBased/", relation);
-        }).AddEndpointFilter<ValidatorFilter<SetRelationCommandRequest>>();
+        }).AddEndpointFilter<ValidatorFilter<TBSetRelationCommandRequest>>();
 
 
 
         builder.MapPost("/TextBased/SaveAnswer", async (
             ITextBasedRepository repository,
             IMediator mediator,
-            SaveAnswerCommandRequest answer) =>
+            TBSaveAnswerCommandRequest answer) =>
         {
             await mediator.Send(answer);
 
             return Results.Created($"/TextBased/answer", answer);
-        }).AddEndpointFilter<ValidatorFilter<SaveAnswerCommandRequest>>();
+        }).AddEndpointFilter<ValidatorFilter<TBSaveAnswerCommandRequest>>();
 
     }
 }

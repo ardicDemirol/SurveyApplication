@@ -2,7 +2,7 @@
 using SurveyApplication.Features.TextBasedQuestion.Command.SetRelation;
 
 namespace SurveyApplication.Validations.PresantationLayer.TextBasedValidations;
-public class TBQSetRelationValidatorPrs : AbstractValidator<SetRelationCommandRequest>
+public class TBQSetRelationValidatorPrs : AbstractValidator<TBSetRelationCommandRequest>
 {
     public TBQSetRelationValidatorPrs()
     {

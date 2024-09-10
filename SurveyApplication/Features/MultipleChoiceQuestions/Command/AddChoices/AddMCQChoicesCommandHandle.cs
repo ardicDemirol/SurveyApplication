@@ -7,9 +7,7 @@ using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 
 namespace SurveyApplication.Features.MultipleChoiceQuestions.Command.AddChoices;
 
-public class AddMCQChoicesCommandHandler(
-    IMultipleChoiceRepository multipleChoiceRepository,
-    MCQAddChoiceValidatorApp validator) : IRequestHandler<AddMCQChoiceCommandRequest, IActionResult>
+public class AddMCQChoicesCommandHandle(IMultipleChoiceRepository multipleChoiceRepository, MCQAddChoiceValidatorApp validator) : IRequestHandler<AddMCQChoiceCommandRequest, IActionResult>
 {
     private readonly IMultipleChoiceRepository _multipleChoiceRepository = multipleChoiceRepository;
     private readonly MCQAddChoiceValidatorApp _validator = validator;

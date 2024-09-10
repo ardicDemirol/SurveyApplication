@@ -7,7 +7,7 @@ using SurveyApplication.Validations.ApplicationLayer.QuestionValidations;
 
 namespace SurveyApplication.Features.Questions.Command.CreateQuestion;
 
-public class CreateQuestionCommandHandler(
+public class CreateQuestionCommandHandle(
     IQuestionRepository questionRepository,
     CreateQuestionValidatorApp createQuestionCommandValidator) : IRequestHandler<CreateQuestionCommandRequest, IActionResult>
 {

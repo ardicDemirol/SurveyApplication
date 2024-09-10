@@ -2,7 +2,7 @@
 using SurveyApplication.Features.TextBasedQuestion.Command.SaveAnswer;
 
 namespace SurveyApplication.Validations.PresantationLayer.TextBasedValidations;
-public class TBQSaveAnswerValidatorPrs : AbstractValidator<SaveAnswerCommandRequest>
+public class TBQSaveAnswerValidatorPrs : AbstractValidator<TBSaveAnswerCommandRequest>
 {
     public TBQSaveAnswerValidatorPrs()
     {
