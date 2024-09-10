@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Validations\ApplicationLayer\SingleChoiceValidations\" />
     <Folder Include="Validations\ApplicationLayer\TextBasedValidations\" />
   </ItemGroup>
 

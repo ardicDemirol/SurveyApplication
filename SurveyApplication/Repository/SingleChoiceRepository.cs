@@ -17,35 +17,45 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
                               VALUES (@firstChoice,@secondChoice,@questionId)
                               """;
 
+    private static readonly string insertAnswerCommand = """
+                            INSERT INTO single_choice_answers (answer, question_id, survey_id )
+                            VALUES (:answer, :questionId, :surveyId)
+                            """;
+
     private static readonly string surveyIdQuery = """
                               SELECT survey_id
                               FROM question
-                              WHERE question_id = @questionId
+                              WHERE question_id = :questionId
                               """;
 
-    private static readonly string checkQuestionQuery = """ 
+    private static readonly string questionExistQuery = """ 
                                     SELECT COUNT(1)
                                     FROM question 
-                                    WHERE question_id = @questionId     
-                                        AND survey_id = @surveyId
+                                    WHERE question_id = :questionId     
                                     """;
 
-    private static readonly string getChoicesQuery = """
-                                 SELECT first_choice, second_choice 
-                                 FROM single_choice_questions 
-                                 WHERE question_id = @questionId
-                                 """;
-
-    private static readonly string checkAnswerQuery = """
+    private static readonly string answerExistQuery = """
                             SELECT COUNT(1)
                             FROM single_choice_answers 
-                            WHERE question_id = @questionId 
-                                AND survey_id = @surveyId
+                            WHERE question_id = :questionId 
                             """;
 
-    private static readonly string insertAnswerCommand = """
-                            INSERT INTO single_choice_answers (answer,question_id,survey_id) 
-                            VALUES (@answer,@questionId,@surveyId)
+    private static readonly string choicesExistQuery = """
+                            SELECT COUNT(1)
+                            FROM single_choice_questions
+                            WHERE question_id = :questionId
+                            """;
+
+    private static readonly string getQuestionTypeQuery = """
+                            SELECT question_type_id
+                            FROM question
+                            WHERE question_id = :questionId
+                            """;
+
+    private static readonly string getChoicesQuery = """
+                            SELECT first_choice, second_choice
+                            FROM single_choice_questions
+                            WHERE question_id = :questionId
                             """;
 
 
@@ -74,37 +84,13 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
     {
         using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 
-        int existingQuestionCount = await connection.ExecuteScalarAsync<int>(checkQuestionQuery,
-            new
-            {
-                questionId = answer.Question_Id,
-                surveyId = answer.Survey_Id
-            });
-
-        if (existingQuestionCount < 1) throw new ArgumentException("No such question was found");
-
-        var validChoices = connection.Query(getChoicesQuery, new { questionId = answer.Question_Id })
-                                 .SelectMany(row => new List<string> { row.first_choice, row.second_choice })
-                                 .ToList();
-
-        string userAnswer = answer.Answer;
-
-        if (!validChoices.Contains(userAnswer)) throw new ArgumentException("Answer not found in the choices");
-
-        int existingCount = await connection.ExecuteScalarAsync<int>(checkAnswerQuery,
-            new
-            {
-                questionId = answer.Question_Id,
-                surveyId = answer.Survey_Id
-            });
-
-        if (existingCount > 0) throw new ArgumentException("You replied this question before");
+        int surveyId = await connection.ExecuteScalarAsync<int>(surveyIdQuery, new { questionId = answer.Question_Id });
 
         var parameters = new
         {
             answer = answer.Answer,
             questionId = answer.Question_Id,
-            surveyId = answer.Survey_Id,
+            surveyId,
         };
 
         await _garnetClient.DeleteValue($"{CacheKeys.SurveyQuestionsCacheKey}{answer.Survey_Id}");
@@ -113,8 +99,58 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
         await connection.ExecuteAsync(insertAnswerCommand, parameters);
     }
 
-    public Task<bool> QuestionExist(int questionId, string firstChoice, string secondChoice)
+
+    public async Task<bool> QuestionExist(int questionId)
     {
-        throw new NotImplementedException();
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        int existingQuestionCount = await connection.ExecuteScalarAsync<int>(questionExistQuery, new { questionId });
+
+        return existingQuestionCount > 0;
     }
+
+    public async Task<bool> QuestionTypeIsCorrect(int questionId)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        int questionTypeId = await connection.ExecuteScalarAsync<int>(getQuestionTypeQuery, new { questionId });
+
+        return questionTypeId == 1;
+    }
+
+    public async Task<bool> ChoicesAreEquals(string firstChoice, string secondChoice)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        return firstChoice.Equals(secondChoice, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    public async Task<bool> ChoicesExist(int questionId)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        int existingChoicesCount = await connection.ExecuteScalarAsync<int>(choicesExistQuery, new { questionId });
+
+        return existingChoicesCount > 0;
+    }
+
+    public async Task<bool> AnswerIsAnChoice(int questionId, string answer)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        var choices = await connection.QueryAsync<string>(getChoicesQuery, new { questionId });
+
+        return choices.Contains(answer);
+
+    }
+
+    public async Task<bool> AnswerExist(int questionId)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        int existingCount = await connection.ExecuteScalarAsync<int>(answerExistQuery, new { questionId });
+
+        return existingCount > 0;
+    }
+
 }

@@ -3,7 +3,7 @@ using SurveyApplication.Features.SingleChoiceQuestions.Command.SavesAnswer;
 
 namespace SurveyApplication.Validations.PresantationLayer.SingleChoiceValidations;
 
-public class SCSaveAnswerValidatorPrs : AbstractValidator<SaveSCACommandRequest>
+public class SCSaveAnswerValidatorPrs : AbstractValidator<SCSaveAnswerCommandRequest>
 {
     public SCSaveAnswerValidatorPrs()
     {
@@ -14,9 +14,5 @@ public class SCSaveAnswerValidatorPrs : AbstractValidator<SaveSCACommandRequest>
 
         RuleFor(request => request.Question_Id)
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
-
-        RuleFor(request => request.Survey_Id)
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
-
     }
 }

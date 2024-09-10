@@ -7,16 +7,15 @@ public sealed record SCAnswerDto
     public int Question_Id { get; }
     public int Survey_Id { get; }
 
-    private SCAnswerDto(string answer, int questionId, int surveyId)
+    private SCAnswerDto(string answer, int questionId)
     {
         Answer = answer;
         Question_Id = questionId;
-        Survey_Id = surveyId;
     }
 
-    public static SCAnswerDto Create(string answer, int questionId, int surveyId)
+    public static SCAnswerDto Create(string answer, int questionId)
     {
-        return new SCAnswerDto(answer, questionId, surveyId);
+        return new SCAnswerDto(answer, questionId);
     }
 }
 

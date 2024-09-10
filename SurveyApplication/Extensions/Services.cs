@@ -9,6 +9,7 @@ using SurveyApplication.Services.Email;
 using SurveyApplication.Services.Email.Interfaces;
 using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.QuestionValidations;
+using SurveyApplication.Validations.ApplicationLayer.SingleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.SurveyValidations;
 using SurveyApplication.Validations.PresantationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.PresantationLayer.QuestionValidations;
@@ -70,6 +71,8 @@ public static class Services
         services.AddScoped<MCQSetMaxAnswerAmountValidatiorApp>();
         services.AddScoped<MCQAddChoiceValidatorApp>();
         services.AddScoped<MCQSaveAnswerValidatorApp>();
+        services.AddScoped<SCQAddChoiceValidatorApp>();
+        services.AddScoped<SCQSaveAnswerValidatorApp>();
         //
 
         services.AddTransient<IEmailService, EmailService>();

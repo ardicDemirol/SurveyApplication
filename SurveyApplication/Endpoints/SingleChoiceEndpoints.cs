@@ -13,21 +13,21 @@ public static class SingleChoiceEndpoints
         builder.MapPost("/SingleChoice/AddChoicesToQuestion", async (
             ISingleChoiceRepository repository,
             IMediator mediator,
-            AddSCQChoicesCommandRequest choice) =>
+            SCQAddChoicesCommandRequest choice) =>
         {
             await mediator.Send(choice);
             return Results.Ok(choice);
-        }).AddEndpointFilter<ValidatorFilter<AddSCQChoicesCommandRequest>>();
+        }).AddEndpointFilter<ValidatorFilter<SCQAddChoicesCommandRequest>>();
 
 
         builder.MapPost("/SingleChoice/SaveAnswer", async (
             ISingleChoiceRepository repository,
             IMediator mediator,
-            SaveSCACommandRequest answer) =>
+            SCSaveAnswerCommandRequest answer) =>
         {
             await mediator.Send(answer);
             return Results.Ok(answer);
-        }).AddEndpointFilter<ValidatorFilter<SaveSCACommandRequest>>();
+        }).AddEndpointFilter<ValidatorFilter<SCSaveAnswerCommandRequest>>();
 
     }
 

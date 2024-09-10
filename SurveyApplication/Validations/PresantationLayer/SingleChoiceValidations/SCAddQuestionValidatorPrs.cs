@@ -3,7 +3,7 @@ using SurveyApplication.Features.SingleChoiceQuestions.Command.AddChoices;
 
 namespace SurveyApplication.Validations.PresantationLayer.SingleChoiceValidations;
 
-public class SCAddQuestionValidatorPrs : AbstractValidator<AddSCQChoicesCommandRequest>
+public class SCAddQuestionValidatorPrs : AbstractValidator<SCQAddChoicesCommandRequest>
 {
     public SCAddQuestionValidatorPrs()
     {
