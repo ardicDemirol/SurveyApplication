@@ -75,7 +75,6 @@ public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnect
 
         await _garnetClient.DeleteValue(CacheKeys.AllSurveysCacheKey);
 
-
         var jobId = BackgroundJob.Enqueue<IEmailService>(x => x.SendEmailAsync(
                     receiverEmail,
                     "New Survey Added",

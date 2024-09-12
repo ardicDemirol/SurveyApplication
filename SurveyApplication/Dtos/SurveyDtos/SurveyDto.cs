@@ -22,13 +22,5 @@ public sealed record SurveyDto
     {
         return new SurveyDto(surveyTitle, startTime, finishTime, completedCount, companyName);
     }
-    public static SurveyDto Empty() => new(
-        surveyTitle: string.Empty,
-        startTime: default,
-        finishTime: default,
-        completedCount: 0,
-        companyName: string.Empty
-    );
-
 }
 

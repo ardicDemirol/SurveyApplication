@@ -10,10 +10,7 @@ public class TBQSaveAnswerValidatorPrs : AbstractValidator<TBSaveAnswerCommandRe
             .NotEmpty().WithMessage("{PropertyName} cannot be empty")
             .MaximumLength(200).WithMessage("{PropertyName} cannot be more than {MaxLength} characters");
 
-
         RuleFor(x => x.Question_Id)
             .NotEmpty().WithMessage("{PropertyName} cannot be empty");
-
-
     }
 }

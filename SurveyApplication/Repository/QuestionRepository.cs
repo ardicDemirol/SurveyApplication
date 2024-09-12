@@ -103,6 +103,5 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         var parameters = new { questionText, surveyId };
 
         return await connection.ExecuteScalarAsync<int>(existByNameQuery, parameters) == 1;
-
     }
 }

@@ -6,6 +6,11 @@ public static class SurveyMapper
 {
     public static SurveyDto ToDto(this Survey survey)
     {
-        return SurveyDto.Create(survey.Survey_Title, survey.Start_Time, survey.Finish_Time, survey.Completed_Count, survey.Company_Name);
+        return SurveyDto.Create(
+            survey.Survey_Title,
+            survey.Start_Time,
+            survey.Finish_Time,
+            survey.Completed_Count,
+            survey.Company_Name);
     }
 }

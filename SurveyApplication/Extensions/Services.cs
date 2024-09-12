@@ -7,11 +7,13 @@ using SurveyApplication.Interfaces;
 using SurveyApplication.Repository;
 using SurveyApplication.Services.Email;
 using SurveyApplication.Services.Email.Interfaces;
+using SurveyApplication.Validations.ApplicationLayer.AccountValidations;
 using SurveyApplication.Validations.ApplicationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.QuestionValidations;
 using SurveyApplication.Validations.ApplicationLayer.SingleChoiceValidations;
 using SurveyApplication.Validations.ApplicationLayer.SurveyValidations;
 using SurveyApplication.Validations.ApplicationLayer.TextBasedValidations;
+using SurveyApplication.Validations.PresantationLayer.AccountValidations;
 using SurveyApplication.Validations.PresantationLayer.MultipleChoiceValidations;
 using SurveyApplication.Validations.PresantationLayer.QuestionValidations;
 using SurveyApplication.Validations.PresantationLayer.SingleChoiceValidations;
@@ -47,6 +49,7 @@ public static class Services
                 options.UseNpgsqlConnection(connectionString);
             }));
 
+        services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ISurveyRepository, SurveyRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<ISingleChoiceRepository, SingleChoiceRepository>();
@@ -55,7 +58,10 @@ public static class Services
         services.AddScoped<IQuestionsAndAnswersRepository, QuestionsAndAnswersRepository>();
         services.AddSingleton<IDatabaseConnectionProvider, DatabaseConnectionProvider>();
         services.AddScoped<IGarnetClient, MyGarnetClient>();
+        services.AddScoped<IJWTProvider, JWTProvider>();
 
+        services.AddValidatorsFromAssemblyContaining<RegisterValidatorPrs>();
+        services.AddValidatorsFromAssemblyContaining<LoginValidatorPrs>();
         services.AddValidatorsFromAssemblyContaining<CreateSurveyValidatorPrs>();
         services.AddValidatorsFromAssemblyContaining<CreateQuestionValidatorPrs>();
         services.AddValidatorsFromAssemblyContaining<SCAddQuestionValidatorPrs>();
@@ -66,7 +72,9 @@ public static class Services
         services.AddValidatorsFromAssemblyContaining<TBQSetRelationValidatorPrs>();
         services.AddValidatorsFromAssemblyContaining<TBQSaveAnswerValidatorPrs>();
 
-        //
+
+        services.AddScoped<RegisterValidatorApp>();
+        services.AddScoped<LoginValidatorApp>();
         services.AddScoped<CreateSurveyValidatorApp>();
         services.AddScoped<CreateQuestionValidatorApp>();
         services.AddScoped<MCQSetMaxAnswerAmountValidatiorApp>();
@@ -76,7 +84,6 @@ public static class Services
         services.AddScoped<SCQSaveAnswerValidatorApp>();
         services.AddScoped<TBSaveAnswerValidatorApp>();
         services.AddScoped<TBSetRelationValidatorApp>();
-        //
 
         services.AddTransient<IEmailService, EmailService>();
 
