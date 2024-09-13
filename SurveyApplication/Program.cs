@@ -26,11 +26,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("admin", policy => policy.RequireRole("admin"));
-    options.AddPolicy("user", policy => policy.RequireRole("user"));
-});
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("admin", policy => policy.RequireRole("admin"))
+    .AddPolicy("user", policy => policy.RequireRole("user"));
 
 
 builder.Services.AddControllers();
@@ -62,8 +60,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
-
 
 
 builder.Services.AddApplicationServices();

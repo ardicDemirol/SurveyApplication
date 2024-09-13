@@ -9,8 +9,10 @@ public class DatabaseConnectionProvider(IConfiguration configuration) : IDatabas
 
     public async Task<NpgsqlConnection> ConnectAndOpenConnectionAsync()
     {
-        var connection = new NpgsqlConnection(_configuration.GetConnectionString("PostgresConnection"));
+        var connectionString = Environment.GetEnvironmentVariable("SurveyAppPostgresConnectionString");
+        var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync();
         return connection;
     }
+
 }

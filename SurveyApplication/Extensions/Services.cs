@@ -24,7 +24,6 @@ using System.Reflection;
 namespace SurveyApplication.Extensions;
 public static class Services
 {
-    private static readonly string connectionString = "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;Pooling=true;";
     private static readonly string[] commandLineArgs = ["--config-import-path", "garnet.conf"];
 
     public static void AddApplicationServices(this IServiceCollection services)
@@ -40,14 +39,16 @@ public static class Services
         var assembly = Assembly.GetExecutingAssembly();
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(assembly));
 
+
         services.AddHangfire(config => config
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
             .UsePostgreSqlStorage(options =>
             {
-                options.UseNpgsqlConnection(connectionString);
+                options.UseNpgsqlConnection(Environment.GetEnvironmentVariable("SurveyAppPostgresConnectionString"));
             }));
+
 
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ISurveyRepository, SurveyRepository>();
