@@ -47,7 +47,8 @@ public static class Services
             .UseRecommendedSerializerSettings()
             .UsePostgreSqlStorage(options =>
             {
-                options.UseNpgsqlConnection(Environment.GetEnvironmentVariable("SurveyAppPostgresConnectionString"));
+                //options.UseNpgsqlConnection(Environment.GetEnvironmentVariable("SurveyAppPostgresConnectionString"));
+                options.UseNpgsqlConnection("Host=localhost; Username=postgres; Password=mysecretpassword; Database=postgres; Minimum Pool Size=2;Maximum Pool Size=5;Pooling=true; Application Name=survey; Include Error Detail=true; Timeout=1000; CommandTimeout=1000");
             }));
 
 
