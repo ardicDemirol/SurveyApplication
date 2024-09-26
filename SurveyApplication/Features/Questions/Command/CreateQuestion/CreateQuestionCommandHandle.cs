@@ -17,6 +17,8 @@ public class CreateQuestionCommandHandle(
 
     public async Task<IActionResult> Handle(CreateQuestionCommandRequest request, CancellationToken cancellationToken)
     {
+
+        await _createQuestionCommandValidator.SurveyExist(request);
         await _createQuestionCommandValidator.QuestionExist(request);
 
         var newQuestion = Question.Create(0, request.Question_Text, request.Question_Answer_Required, request.Survey_Id, request.Question_Type_Id);

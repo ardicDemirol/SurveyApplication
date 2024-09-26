@@ -43,7 +43,7 @@ public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnect
                              WHERE survey_id = :surveyId
                              """;
 
-    private static readonly string getAllSurveyCommand = """
+    private static readonly string getAllSurveyQuery = """
                             SELECT survey_id, survey_title
                             FROM surveys
                             """;
@@ -116,7 +116,7 @@ public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnect
             return JsonSerializer.Deserialize<List<T>>(cachedData);
         }
 
-        var surveys = await connection.QueryAsync<T>(getAllSurveyCommand);
+        var surveys = await connection.QueryAsync<T>(getAllSurveyQuery);
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(surveys));
 

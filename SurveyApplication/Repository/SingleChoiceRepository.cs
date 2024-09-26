@@ -14,7 +14,7 @@ public class SingleChoiceRepository(IDatabaseConnectionProvider databaseConnecti
 
     private static readonly string insertChoiceCommand = """
                               INSERT INTO single_choice_questions (first_choice,second_choice,question_id) 
-                              VALUES (@firstChoice,@secondChoice,@questionId)
+                              VALUES (:firstChoice,:secondChoice,:questionId)
                               """;
 
     private static readonly string insertAnswerCommand = """

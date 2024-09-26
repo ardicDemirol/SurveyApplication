@@ -15,7 +15,7 @@ public class QuestionsAndAnswersRepository(IDatabaseConnectionProvider databaseC
     private static readonly string getQuestionsQuery = """
                                    SELECT question_id, question_text, answers
                                    FROM questions_and_answers
-                                   WHERE survey_id = @surveyId
+                                   WHERE survey_id = :surveyId
                                    """;
 
     #endregion

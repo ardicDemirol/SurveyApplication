@@ -18,7 +18,7 @@ public class LoginCommandHandle(
     {
         await _validator.LoginSuccessfully(request);
         var role = await _repository.GetRole(request.email);
-        var token = _provider.GenerateJWTToken(request.email, request.password, role);
+        var token = _provider.GenerateJWTToken(request.email, role);
 
         return new OkObjectResult(new { Token = token });
     }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Garnet;
 using Hangfire;
 using Hangfire.PostgreSql;
 using SurveyApplication.Caching;
@@ -30,7 +31,7 @@ public static class Services
     {
         Task.Run(() =>
         {
-            using var server = new Garnet.GarnetServer(commandLineArgs);
+            using var server = new GarnetServer(commandLineArgs, cleanupDir: true);
             server.Start();
             Thread.Sleep(Timeout.Infinite);
         });

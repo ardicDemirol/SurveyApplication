@@ -95,7 +95,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
                                      FROM other_choices oc
                                      JOIN multiple_choice_questions mcq ON oc.multiple_choice_questions_id = mcq.choice_id
                                      WHERE oc.choice = :answer
-                                       AND mcq.question_id = @questionId
+                                       AND mcq.question_id = :questionId
                                  )
                                  """;
 
@@ -103,7 +103,7 @@ public class MultipleChoiceRepository(IDatabaseConnectionProvider databaseConnec
                                  SELECT COUNT(1)
                                  FROM other_choices
                                  WHERE choice = :choice
-                                 AND multiple_choice_questions_id = @multipleChoiceQuestionsId
+                                 AND multiple_choice_questions_id = :multipleChoiceQuestionsId
                                  """;
 
 

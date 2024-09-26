@@ -8,12 +8,11 @@ namespace SurveyApplication.Extensions;
 public class JWTProvider(IConfiguration configuration) : IJWTProvider
 {
     private readonly IConfiguration _configuration = configuration;
-    public string GenerateJWTToken(string email, string password, string role)
+    public string GenerateJWTToken(string email, string role)
     {
         var claims = new List<Claim>
         {
         new (ClaimTypes.NameIdentifier, email),
-        new (ClaimTypes.NameIdentifier,password),
         new (ClaimTypes.Role,role)
         };
 

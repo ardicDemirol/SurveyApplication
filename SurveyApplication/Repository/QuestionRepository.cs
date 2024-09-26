@@ -14,33 +14,33 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
 
     private static readonly string insertQuestion = """
                                 INSERT INTO question (question_text, question_order, question_answer_required,survey_id,question_type_id)
-                                VALUES (@questionText,@questionOrder,@questionAnswerRequired,@surveyId,@questionTypeId)
+                                VALUES (:questionText, :questionOrder, :questionAnswerRequired, :surveyId, :questionTypeId)
                                 """;
 
     private static readonly string checkSurveyQuery = """
                                   SELECT COUNT(1)
                                   FROM surveys 
-                                  WHERE survey_id = @surveyId
+                                  WHERE survey_id = :surveyId
                                   """;
 
     private static readonly string getQuestionsWithChoicesQuery = """
                                               SELECT question_id, question_text,choice
                                               FROM question_choices_view
-                                              WHERE survey_id = @surveyId
+                                              WHERE survey_id = :surveyId
                                               """;
 
     private static readonly string getQuestionsTextBasedQuery = """
                                               SELECT question_id, question_text
                                               FROM question
-                                              WHERE survey_id = @surveyId
+                                              WHERE survey_id = :surveyId
                                               AND question_type_id = 4
                                               """;
 
     private static readonly string existByNameQuery = """
                                   SELECT COUNT(1)
                                   FROM question
-                                  WHERE question_text = @questionText
-                                  AND survey_id = @surveyId
+                                  WHERE question_text = :questionText
+                                  AND survey_id = :surveyId
                                   """;
     #endregion
 
@@ -78,9 +78,6 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
             return JsonSerializer.Deserialize<List<QuestionChoicesViewDto>>(cachedData);
         }
 
-        int existingSurveyCount = await connection.ExecuteScalarAsync<int>(checkSurveyQuery, new { surveyId });
-
-        if (existingSurveyCount < 1) throw new ArgumentException("No such survey was found");
 
         var choices = await connection.QueryAsync<QuestionChoicesViewDto>(getQuestionsWithChoicesQuery, new { surveyId });
 
@@ -103,5 +100,14 @@ public class QuestionRepository(IDatabaseConnectionProvider databaseConnectionPr
         var parameters = new { questionText, surveyId };
 
         return await connection.ExecuteScalarAsync<int>(existByNameQuery, parameters) == 1;
+    }
+
+    public async Task<bool> SurveyExist(int surveyId)
+    {
+        using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
+
+        var parameters = new { surveyId };
+
+        return await connection.ExecuteScalarAsync<int>(checkSurveyQuery, parameters) == 1;
     }
 }
