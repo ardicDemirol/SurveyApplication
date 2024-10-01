@@ -5,6 +5,7 @@ using Hangfire.PostgreSql;
 using SurveyApplication.Caching;
 using SurveyApplication.Data;
 using SurveyApplication.Interfaces;
+using SurveyApplication.Middleware;
 using SurveyApplication.Repository;
 using SurveyApplication.Services.Email;
 using SurveyApplication.Services.Email.Interfaces;
@@ -52,6 +53,8 @@ public static class Services
             }));
 
 
+        services.AddTransient<GlobalErrorHandlingMiddleware>();
+
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ISurveyRepository, SurveyRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -87,6 +90,8 @@ public static class Services
         services.AddScoped<SCQSaveAnswerValidatorApp>();
         services.AddScoped<TBSaveAnswerValidatorApp>();
         services.AddScoped<TBSetRelationValidatorApp>();
+
+
 
         services.AddTransient<IEmailService, EmailService>();
 

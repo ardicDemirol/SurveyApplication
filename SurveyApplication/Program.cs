@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SurveyApplication.Endpoints;
 using SurveyApplication.Extensions;
+using SurveyApplication.Middleware;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +76,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.MapControllers();
 
 
