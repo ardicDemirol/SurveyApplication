@@ -5,7 +5,9 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyApplication", "SurveyApplication\SurveyApplication.csproj", "{5842CA5A-0AE1-4FA7-8B0C-EA2035ADCF20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyApplication.Services", "SurveyApplication.Services\SurveyApplication.Services.csproj", "{B204A689-7C63-422B-9599-C226B4EB936D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyApplication.Services", "SurveyApplication.Services\SurveyApplication.Services.csproj", "{B204A689-7C63-422B-9599-C226B4EB936D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyApplication.Tests", "SurveyApplication.Tests\SurveyApplication.Tests.csproj", "{D338CFB9-83E3-413B-B54D-FBB7324B2455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B204A689-7C63-422B-9599-C226B4EB936D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B204A689-7C63-422B-9599-C226B4EB936D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B204A689-7C63-422B-9599-C226B4EB936D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D338CFB9-83E3-413B-B54D-FBB7324B2455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D338CFB9-83E3-413B-B54D-FBB7324B2455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D338CFB9-83E3-413B-B54D-FBB7324B2455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D338CFB9-83E3-413B-B54D-FBB7324B2455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

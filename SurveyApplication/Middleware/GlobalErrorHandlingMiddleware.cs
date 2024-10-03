@@ -11,9 +11,7 @@ public class GlobalErrorHandlingMiddleware(ILogger<GlobalErrorHandlingMiddleware
     {
         try
         {
-            _logger.LogInformation("Request received: {Path}", context.Request.Path);
             await next(context);
-            _logger.LogInformation("Request completed: {Path}", context.Request.Path);
         }
         catch (Exception ex)
         {

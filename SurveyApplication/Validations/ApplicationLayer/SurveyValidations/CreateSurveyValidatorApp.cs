@@ -8,7 +8,7 @@ public sealed class CreateSurveyValidatorApp(ISurveyRepository repository)
     private readonly ISurveyRepository _repository = repository;
     public async Task SurveyExist(CreateSurveyCommandRequest request)
     {
-        var surveyExists = await _repository.Exist(request.Survey_Title);
+        var surveyExists = await _repository.SurveyExist(request.Survey_Title);
 
         if (surveyExists)
         {

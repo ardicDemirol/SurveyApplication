@@ -7,5 +7,5 @@ public interface ISurveyRepository
     Task CreateSurvey(SurveyDto survey);
     Task<T> GetSurveyById<T>(int id);
     Task<IEnumerable<T>> GetAllSurveys<T>();
-    Task<bool> Exist(string surveyTitle);
+    Task<bool> SurveyExist(string surveyTitle);
 }

@@ -123,7 +123,7 @@ public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnect
         return surveys ?? throw new ArgumentException("Survey not found");
     }
 
-    public async Task<bool> Exist(string surveyTitle)
+    public async Task<bool> SurveyExist(string surveyTitle)
     {
         using var connection = await _databaseConnectionProvider.ConnectAndOpenConnectionAsync();
 

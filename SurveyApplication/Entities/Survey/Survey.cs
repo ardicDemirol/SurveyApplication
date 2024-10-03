@@ -52,5 +52,4 @@ public sealed class Survey : Entity
             surveyDto.Completed_Count,
             surveyDto.Company_Name);
     }
-
 }
