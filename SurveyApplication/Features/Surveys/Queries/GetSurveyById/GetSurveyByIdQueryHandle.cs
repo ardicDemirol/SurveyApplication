@@ -11,7 +11,7 @@ public class GetSurveyByIdQueryHandle(ISurveyRepository repository) : IRequestHa
     {
         var survey = await _repository.GetSurveyById<GetSurveyByIdQueryResponse>(request.SurveyId);
 
-        return survey;
+        return survey ?? throw new Exception("Survey not found");
     }
 }
 

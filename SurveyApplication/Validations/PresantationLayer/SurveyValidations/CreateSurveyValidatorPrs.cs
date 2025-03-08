@@ -7,6 +7,7 @@ public class CreateSurveyValidatorPrs : AbstractValidator<CreateSurveyCommandReq
     public CreateSurveyValidatorPrs()
     {
         RuleFor(survey => survey.Survey_Title)
+        .NotNull().WithMessage("{PropertyName} cannot be null.")
         .NotEmpty().WithMessage("{PropertyName} cannot be empty.")
         .MinimumLength(5).WithMessage("{PropertyName} must be at least {MinLength} characters long.")
         .MaximumLength(30).WithMessage("{PropertyName} cannot exceed {MaxLength} characters.")

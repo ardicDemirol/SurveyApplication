@@ -22,7 +22,6 @@ public sealed class CreateSurveyCommandHandle(
 
         await _repository.CreateSurvey(newSurvey.ToDto());
 
-        //return new OkObjectResult("Survey Created Successfully");
         return new OkObjectResult("Survey Created Successfully");
     }
 }

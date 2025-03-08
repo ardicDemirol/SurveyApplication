@@ -101,7 +101,7 @@ public sealed class SurveyRepository(IDatabaseConnectionProvider databaseConnect
 
         await _garnetClient.SetValue(cacheKey, JsonSerializer.Serialize(result));
 
-        return result ?? throw new ArgumentException("Survey not found");
+        return result;
     }
 
     public async Task<IEnumerable<T>> GetAllSurveys<T>()
